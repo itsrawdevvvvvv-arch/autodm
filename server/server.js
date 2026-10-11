@@ -10,6 +10,15 @@ const { handleMessage, handleComment } = require('./automation');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Allow the web app to be hosted separately from the server (e.g. GitHub Pages).
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
+
 app.use(express.json({ verify: (req, _res, buf) => { req.rawBody = buf; } }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
