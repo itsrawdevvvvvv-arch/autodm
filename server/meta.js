@@ -99,4 +99,43 @@ async function graphPost(path, body, token, base) {
   return j;
 }
 
-module.exports = { configured, authorizeUrl, exchangeCode, getAccount, sendDM, sendPrivateReply, replyToComment, ROUTE, PUBLIC_URL };
+/* ---------- Conversations (polling mode — no webhook needed) ---------- */
+function hostBase() { return ROUTE === 'facebook' ? FB_GRAPH : GRAPH; }
+function selfId() { return ROUTE === 'facebook' ? (process.env.PAGE_ID || 'me') : 'me'; }
+
+async function getConversations(token) {
+  const platform = ROUTE === 'facebook' ? 'platform=instagram&' : '';
+  const url = `${hostBase()}/${selfId()}/conversations?${platform}access_token=${encodeURIComponent(token)}`;
+  const res = await fetch(url);
+  const j = await res.json();
+  if (!res.ok) throw new Error('Conversations API: ' + JSON.stringify(j));
+  return j.data || [];
+}
+
+async function getConversationMessages(convId, token) {
+  const url = `${hostBase()}/${convId}?fields=messages&access_token=${encodeURIComponent(token)}`;
+  const res = await fetch(url);
+  const j = await res.json();
+  if (!res.ok) throw new Error('Messages API: ' + JSON.stringify(j));
+  return (j.messages && j.messages.data) || [];
+}
+
+async function getMessage(msgId, token) {
+  const url = `${hostBase()}/${msgId}?fields=id,created_time,from,message&access_token=${encodeURIComponent(token)}`;
+  const res = await fetch(url);
+  const j = await res.json();
+  if (!res.ok) throw new Error('Message API: ' + JSON.stringify(j));
+  return j;
+}
+
+/** Refresh a long-lived token (valid ~60 days). No app secret required. */
+async function refreshToken(token) {
+  const url = `${GRAPH}/refresh_access_token?grant_type=ig_refresh_token&access_token=${encodeURIComponent(token)}`;
+  const res = await fetch(url);
+  const j = await res.json();
+  if (!res.ok) throw new Error('Refresh failed: ' + JSON.stringify(j));
+  return j; // { access_token, token_type, expires_in }
+}
+
+module.exports = { configured, authorizeUrl, exchangeCode, getAccount, sendDM, sendPrivateReply, replyToComment,
+  getConversations, getConversationMessages, getMessage, refreshToken, ROUTE, PUBLIC_URL };

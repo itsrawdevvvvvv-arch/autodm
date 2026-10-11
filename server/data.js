@@ -24,7 +24,7 @@ const DEFAULTS = {
     { id: 'r3', type: 'comment', name: 'Link request', enabled: true, keywords: ['link', 'send'], match: 'contains', publicReply: 'Sent to your DMs!', dmReply: 'Here is the link you asked for.' },
   ],
   activity: [],
-  settings: { maxSends: 200, windowHours: 24, disclose: true, sendsThisHour: 0 },
+  settings: { maxSends: 200, windowHours: 24, disclose: true, sendsThisHour: 0, receiveMode: 'poll', pollSeconds: 30 },
   account: { connected: false, token: '', igId: '', handle: '' },
 };
 
@@ -45,5 +45,9 @@ module.exports = {
   account: {
     get: () => Object.assign({}, DEFAULTS.account, read('account', {})),
     set: (a) => { const cur = read('account', {}); const next = Object.assign(cur, a); write('account', next); return next; },
+  },
+  poller: {
+    get: () => Object.assign({ lastSeen: 0 }, read('poller', {})),
+    set: (v) => { const next = Object.assign(read('poller', {}), v); write('poller', next); return next; },
   },
 };

@@ -10,6 +10,32 @@ Instagram Messaging API**.
 
 ---
 
+## Personal use (just you)
+
+If this is only ever for **your own** account, it gets much simpler:
+
+- **No App Review.** That's only required to serve Instagram accounts you
+  don't own. For your own account, Standard Access is enough.
+- **No OAuth redirect.** Generate a long-lived token in the Meta console and
+  paste it into **Settings → Account**. It refreshes itself (**Refresh token**) —
+  no app secret needed.
+- **No public URL or tunnel.** Set receive mode to **Polling** and AutoDM
+  checks for new messages on its own, locally. Switch to **Webhook** only if you
+  want real-time delivery and have a public HTTPS URL.
+
+Quick path:
+
+1. `npm install && npm start` → open http://localhost:3000
+2. Settings → Account → paste your long-lived token → **Save token**
+3. Add your reply rules under **Replies**
+4. DM your account from another account and watch it reply
+
+> Note: Meta documents that reading conversations with people who don't have a
+> role on your app may require Advanced Access. If polling returns a permission
+> error, switch receive mode to **Webhook**.
+
+---
+
 ## Read this first — how connecting actually works
 
 To connect a **real** Instagram account and send messages, there are only two

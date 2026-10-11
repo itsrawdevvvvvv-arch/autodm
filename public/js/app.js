@@ -194,9 +194,20 @@ function renderActivity() {
     </div>`).join('');
 }
 
+let receiveMode = 'poll';
+function setMode(m) {
+  receiveMode = m;
+  $$('#modeSeg .seg-btn').forEach(b => b.classList.toggle('is-active', b.dataset.mode === m));
+  $('#modeDesc').textContent = m === 'poll'
+    ? 'AutoDM checks for new messages on its own — no public URL or tunnel needed.'
+    : "Meta pushes messages to this server's /webhook. Needs a public HTTPS URL.";
+  $('#modeBadge').textContent = m === 'poll' ? 'Polling' : 'Webhook';
+}
 function renderSettings() {
   $('#apiBase').value = SERVER_MODE ? location.origin : SERVER;
   $('#apiBase').disabled = SERVER_MODE;
+  setMode(STATE.settings.receiveMode || 'poll');
+  $('#pollSeconds').value = STATE.settings.pollSeconds || 30;
   $('#maxSends').value = STATE.settings.maxSends || 200;
   $('#windowHours').value = STATE.settings.windowHours || 24;
   $('#disclose').checked = !!STATE.settings.disclose;
@@ -304,17 +315,26 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#saveConnection').addEventListener('click', async () => {
     if (!SERVER_MODE) { SERVER = $('#apiBase').value.trim().replace(/\/$/, ''); localStorage.setItem('autodm.server', SERVER); }
     const token = $('#manualToken').value.trim();
-    if (token) await store.setToken(token);
-    toast(SERVER || SERVER_MODE ? 'Saved' : 'Enter a server address');
-    await refresh();
+    if (!token) return toast('Paste your access token');
+    await store.setToken(token);
+    $('#manualToken').value = '';
+    await refresh(); toast('Token saved');
   });
+  $('#refreshToken').addEventListener('click', async () => {
+    if (!apiActive()) return toast('Needs the server running');
+    try { await api('/api/refresh-token', { method: 'POST' }); await refresh(); toast('Token refreshed'); }
+    catch { toast('Could not refresh token'); }
+  });
+  $('#modeSeg').addEventListener('click', e => { const b = e.target.closest('.seg-btn'); if (b) setMode(b.dataset.mode); });
   $('#saveLimits').addEventListener('click', async () => {
     await store.saveSettings({
       maxSends: Math.max(1, parseInt($('#maxSends').value, 10) || 200),
       windowHours: Math.min(24, Math.max(1, parseInt($('#windowHours').value, 10) || 24)),
       disclose: $('#disclose').checked,
+      receiveMode,
+      pollSeconds: Math.max(10, parseInt($('#pollSeconds').value, 10) || 30),
     });
-    await refresh(); toast('Limits saved');
+    await refresh(); toast('Saved');
   });
   $('#exportRules').addEventListener('click', () => {
     const blob = new Blob([JSON.stringify(STATE.rules, null, 2)], { type: 'application/json' });

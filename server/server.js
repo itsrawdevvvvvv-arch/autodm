@@ -6,6 +6,7 @@ const data = require('./data');
 const meta = require('./meta');
 const { verifySignature, parseEvents } = require('./webhook');
 const { handleMessage, handleComment } = require('./automation');
+const poller = require('./poller');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,11 +27,14 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.get('/api/status', (_req, res) => {
   const acc = data.account.get();
+  const s = data.settings.get();
   res.json({
     connected: !!acc.connected && !!acc.token,
     handle: acc.handle || '',
     metaConfigured: meta.configured(),
     tokenSet: !!acc.token,
+    receiveMode: s.receiveMode || 'poll',
+    poller: poller.status(),
   });
 });
 
@@ -62,6 +66,7 @@ app.get('/api/settings', (_req, res) => {
   const s = data.settings.get();
   res.json({
     maxSends: s.maxSends, windowHours: s.windowHours, disclose: s.disclose,
+    receiveMode: s.receiveMode || 'poll', pollSeconds: s.pollSeconds || 30,
     sendsThisHour: data.activity.all().filter(a => a.type === 'message').length % (s.maxSends + 1),
   });
 });
@@ -70,7 +75,11 @@ app.post('/api/settings', (req, res) => {
     maxSends: Math.max(1, parseInt(req.body.maxSends, 10) || 200),
     windowHours: Math.min(24, Math.max(1, parseInt(req.body.windowHours, 10) || 24)),
     disclose: !!req.body.disclose,
+    receiveMode: req.body.receiveMode === 'webhook' ? 'webhook' : 'poll',
+    pollSeconds: Math.max(10, parseInt(req.body.pollSeconds, 10) || 30),
   });
+  // apply receive-mode change immediately
+  if (s.receiveMode === 'poll') poller.start(s.pollSeconds); else poller.stop();
   res.json(s);
 });
 
@@ -88,6 +97,23 @@ app.post('/api/token', async (req, res) => {
     res.json({ ok: true, handle: '', warning: e.message });
   }
 });
+
+/* Refresh the long-lived token (personal mode — no app secret needed). */
+app.post('/api/refresh-token', async (_req, res) => {
+  const acc = data.account.get();
+  if (!acc.token) return res.status(400).json({ error: 'no token' });
+  try {
+    const r = await meta.refreshToken(acc.token);
+    data.account.set({ token: r.access_token, expiresIn: r.expires_in });
+    data.activity.add({ id: 'a' + Date.now(), type: 'system', title: 'Token refreshed', detail: `valid ~${Math.round((r.expires_in || 0) / 86400)} days`, ts: Date.now() });
+    res.json({ ok: true, expiresIn: r.expires_in });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+/* Polling engine control (personal mode — no public webhook URL needed). */
+app.get('/api/poller', (_req, res) => res.json(poller.status()));
+app.post('/api/poller/start', (req, res) => { poller.start((req.body && req.body.seconds) || data.settings.get().pollSeconds); res.json(poller.status()); });
+app.post('/api/poller/stop', (_req, res) => { poller.stop(); res.json(poller.status()); });
 
 /* ================= OAuth ================= */
 
@@ -145,5 +171,9 @@ app.listen(PORT, () => {
   console.log(`\n  AutoDM running at http://localhost:${PORT}`);
   console.log(`  Login route : ${meta.ROUTE}`);
   console.log(`  Meta app    : ${meta.configured() ? 'configured' : 'NOT configured (add META_APP_ID / META_APP_SECRET)'}`);
-  console.log(`  Public URL  : ${meta.PUBLIC_URL}\n`);
+  console.log(`  Public URL  : ${meta.PUBLIC_URL}`);
+  const s = data.settings.get();
+  if ((s.receiveMode || 'poll') === 'poll') { poller.start(s.pollSeconds); console.log('  Receive mode: polling (no webhook needed)'); }
+  else console.log('  Receive mode: webhook');
+  console.log('');
 });
