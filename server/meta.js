@@ -11,7 +11,7 @@ require('dotenv').config();
 const APP_ID = process.env.META_APP_ID || '';
 const APP_SECRET = process.env.META_APP_SECRET || '';
 const ROUTE = (process.env.LOGIN_ROUTE || 'instagram').toLowerCase();
-const PUBLIC_URL = (process.env.PUBLIC_URL || 'http://localhost:3000').replace(/\/$/, '');
+const PUBLIC_URL = (process.env.PUBLIC_URL || process.env.RENDER_EXTERNAL_URL || 'http://localhost:3000').replace(/\/$/, '');
 const GRAPH = 'https://graph.instagram.com/v23.0';
 const FB_GRAPH = 'https://graph.facebook.com/v21.0';
 const SCOPES = 'instagram_business_basic,instagram_business_manage_messages';

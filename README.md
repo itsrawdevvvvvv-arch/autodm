@@ -10,6 +10,17 @@ Instagram Messaging API**.
 
 ---
 
+## No terminal needed
+
+You don't have to install anything or run any commands. Deploy the engine to a
+free cloud host with one click, then connect Instagram:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/itsrawdevvvvvv-arch/autodm)
+
+**Full click-by-click guide (no npm, no localhost): [SETUP.md](SETUP.md)**
+
+---
+
 ## Personal use (just you)
 
 If this is only ever for **your own** account, it gets much simpler:
