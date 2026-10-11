@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: autodm
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PUBLIC_URL
+        sync: false
+      - key: META_APP_ID
+        sync: false
+      - key: META_APP_SECRET
+        sync: false
+      - key: LOGIN_ROUTE
+        value: instagram
+      - key: WEBHOOK_VERIFY_TOKEN
+        generateValue: true

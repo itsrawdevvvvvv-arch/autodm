@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>AutoDM</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== Profile header ===== -->
+  <header class="hdr">
+    <div class="hdr-left">
+      <div class="avatar" id="avatar">?</div>
+      <div class="hdr-name">
+        <strong id="handleName">Not connected</strong>
+        <span id="tagline">Connect your account</span>
+      </div>
+    </div>
+    <span class="badge" id="badge">
+      <svg viewBox="0 0 24 24" class="star-ico"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6L12 16.8 6.6 19.6l1.2-6L3.3 9.4l6.1-.8z"/></svg>
+      <em id="badgeText">Off</em>
+    </span>
+  </header>
+
+  <!-- ===== Scrollable content ===== -->
+  <main class="content" id="content">
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section class="view is-active" id="view-dashboard">
+
+      <!-- day / date strip -->
+      <div class="datestrip" id="dateStrip"></div>
+
+      <!-- main card -->
+      <div class="card">
+        <div class="card-title">
+          <strong>Automation status</strong>
+          <span class="stars" id="stars"></span>
+        </div>
+        <p class="card-desc" id="cardDesc">Connect your Instagram Professional account to start replying automatically.</p>
+
+        <div class="subcard">
+          <div class="avatar sm" id="subAvatar">?</div>
+          <div class="subcard-txt">
+            <strong id="subName">No account</strong>
+            <span id="subTag">Not connected</span>
+          </div>
+          <span class="badge sm" id="subBadge">—</span>
+        </div>
+
+        <div class="boxes" id="statBoxes"></div>
+
+        <button class="btn-primary" id="connectBtn">Connect Instagram</button>
+      </div>
+
+      <!-- guardrails -->
+      <div class="card">
+        <div class="card-title">
+          <strong>Guardrails</strong>
+          <span class="badge sm" id="guardTag">Active</span>
+        </div>
+        <ul class="ticks" id="guardList"></ul>
+      </div>
+    </section>
+
+    <!-- ---------- AUTO-REPLIES ---------- -->
+    <section class="view" id="view-replies">
+      <div class="card">
+        <div class="card-title"><strong>Auto-Replies</strong><span class="badge sm" id="ruleCount">0</span></div>
+        <p class="card-desc">When someone messages you, or comments a keyword, AutoDM sends the reply you set here.</p>
+      </div>
+      <div id="ruleList" class="stack"></div>
+    </section>
+
+    <!-- ---------- ACTIVITY ---------- -->
+    <section class="view" id="view-activity">
+      <div class="card">
+        <div class="card-title"><strong>Activity</strong><span class="badge sm" id="actCount">0</span></div>
+        <div class="feed" id="activityFeed"></div>
+      </div>
+    </section>
+
+    <!-- ---------- SETTINGS ---------- -->
+    <section class="view" id="view-settings">
+      <div class="card">
+        <div class="card-title"><strong>Connection</strong></div>
+        <label class="field"><span>Server address</span><input type="text" id="apiBase" placeholder="http://localhost:3000" /></label>
+        <label class="field"><span>Access token <small>(optional — paste from Meta instead of using Connect)</small></span><input type="password" id="manualToken" placeholder="IGQVJ..." /></label>
+        <button class="btn-primary" id="saveConnection">Save connection</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><strong>Safety limits</strong></div>
+        <label class="field"><span>Max sends per hour</span><input type="number" id="maxSends" min="1" max="1000" /></label>
+        <label class="field"><span>Reply window (hours)</span><input type="number" id="windowHours" min="1" max="24" /></label>
+        <label class="switch-row"><span>Tell people a bot is replying</span><input type="checkbox" id="disclose" /></label>
+        <button class="btn-primary" id="saveLimits">Save limits</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><strong>Rules data</strong></div>
+        <button class="btn-outline" id="exportRules">Export rules</button>
+        <label class="btn-outline" for="importRules">Import rules</label>
+        <input type="file" id="importRules" accept=".json" hidden />
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Bottom navigation ===== -->
+  <nav class="nav" id="nav">
+    <button class="tab is-active" data-view="dashboard">
+      <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg><span>Dashboard</span>
+    </button>
+    <button class="tab" data-view="replies">
+      <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.5 7.2L4 21l1.8-5.5A8 8 0 1121 12z"/></svg><span>Replies</span>
+    </button>
+    <button class="tab" data-view="activity">
+      <svg viewBox="0 0 24 24"><path d="M4 19h16M7 19V9m5 10V5m5 14v-7"/></svg><span>Activity</span>
+    </button>
+    <button class="tab" data-view="settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M4.2 4.2l2.1 2.1m11.4 11.4l2.1 2.1M2 12h3m14 0h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>Settings</span>
+    </button>
+  </nav>
+
+  <!-- Floating add button -->
+  <button class="fab" id="fab" hidden>+</button>
+</div>
+
+<!-- ===== Rule editor sheet ===== -->
+<div class="sheet-backdrop" id="sheetBackdrop">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head">
+      <h3 id="sheetTitle">New auto-reply</h3>
+      <button class="x" id="sheetClose">&times;</button>
+    </div>
+    <form id="ruleForm" class="sheet-body">
+      <input type="hidden" id="ruleId" />
+      <p class="eyebrow">What triggers it</p>
+      <div class="seg" id="triggerSeg">
+        <button type="button" class="seg-btn is-active" data-trigger="dm">Direct message</button>
+        <button type="button" class="seg-btn" data-trigger="comment">Comment</button>
+      </div>
+      <label class="field"><span>Name</span><input type="text" id="ruleName" placeholder="Price enquiry" required /></label>
+      <label class="field"><span>Keywords (comma separated)</span><input type="text" id="ruleKeywords" placeholder="price, cost, how much" required /></label>
+      <label class="field"><span>Match</span>
+        <select id="ruleMatch"><option value="contains">contains any keyword</option><option value="exact">matches exactly</option></select>
+      </label>
+      <label class="field" id="fldDm"><span>Reply message</span><textarea id="ruleReply" rows="3" placeholder="Sent back as a DM"></textarea></label>
+      <label class="field" id="fldPublic" hidden><span>Public comment reply (optional)</span><textarea id="rulePublic" rows="2" placeholder="Posted under the comment"></textarea></label>
+      <label class="field" id="fldDmComment" hidden><span>Private DM reply</span><textarea id="ruleDmReply" rows="3" placeholder="DM sent after the comment"></textarea></label>
+      <div class="sheet-actions">
+        <button type="button" class="btn-outline" id="sheetCancel">Cancel</button>
+        <button type="submit" class="btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
