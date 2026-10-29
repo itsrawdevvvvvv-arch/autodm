@@ -3,7 +3,7 @@ from layout import (page, rel, icon, faq_block, cta_band, ORG_LD, APP_LD, SITE, 
                     DEPLOY_URL, REPO_URL, APP_URL)
 
 TICK = ["Policy-safe by design", "No follow-gating", "Official Meta API",
-        "Replies in under two seconds", "Built for creators"]
+        "Replies within a minute", "Built for creators"]
 
 MOCK = """
 <figure class="mock" aria-label="Illustration of the Viraloop automation builder">
@@ -41,7 +41,7 @@ HOME = f"""
     <div>
       <span class="eyebrow">Instagram DM automation</span>
       <h1>Turn every comment into a <span class="hl">conversation.</span></h1>
-      <p class="lede">Viraloop answers comments and story replies with the right DM in seconds — so the people who were ready to buy hear from you while they still care.</p>
+      <p class="lede">Viraloop answers comments and story replies with the right DM within a minute — so the people who were ready to buy hear from you while they still care.</p>
       <div class="btn-row">
         <a class="btn" href="pricing.html#start">Get it free</a>
         <a class="btn btn--ghost" href="#how">See how it works</a>
