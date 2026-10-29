@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connect your Instagram | Viraloop</title>
+<meta name="description" content="Connect your Instagram account to Viraloop in one click. The exact permissions requested, what each is used for, and how to revoke access at any time.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://itsrawdevvvvvv-arch.github.io/autodm/connect.html">
+<meta name="theme-color" content="#f4ead9">
+<meta name="color-scheme" content="light">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Viraloop">
+<meta property="og:title" content="Connect your Instagram | Viraloop">
+<meta property="og:description" content="Connect your Instagram account to Viraloop in one click. The exact permissions requested, what each is used for, and how to revoke access at any time.">
+<meta property="og:url" content="https://itsrawdevvvvvv-arch.github.io/autodm/connect.html">
+<meta property="og:image" content="https://itsrawdevvvvvv-arch.github.io/autodm/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Viraloop — Instagram DM automation for creators">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Connect your Instagram | Viraloop">
+<meta name="twitter:description" content="Connect your Instagram account to Viraloop in one click. The exact permissions requested, what each is used for, and how to revoke access at any time.">
+<meta name="twitter:image" content="https://itsrawdevvvvvv-arch.github.io/autodm/assets/img/og.png">
+<link rel="preload" href="assets/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/space-grotesk-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/css/styles.css" as="style">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header" data-open="false">
+  <div class="wrap header__inner">
+    <a class="brand" href="index.html"><span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 18c4 0 4-12 8-12 2.2 0 3 2 3 4"/><path d="M16 14c0 2-.8 4-3 4-4 0-4-12-8-12"/></svg></span><span>Viraloop</span></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu"><span></span></button>
+    <nav class="nav" id="site-nav" aria-label="Primary">
+      <a href="features.html">Features</a><a href="pricing.html">Pricing</a><a href="blog/index.html">Blog</a><a href="help/index.html">Help</a><a href="connect.html" aria-current="page">Connect</a><a href="about.html">About</a>
+    </nav>
+    <div class="header__cta">
+      <a class="btn btn--ghost btn--sm" href="pricing.html#start">Get it free</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+
+<section class="hero">
+  <div class="wrap stack" style="max-width:44rem">
+    <span class="eyebrow">Connect</span>
+    <h1>Connect your Instagram.</h1>
+    <p class="lede">One button, the standard Instagram permission screen, thirty seconds. Your password never touches Viraloop — you approve specific permissions and can revoke them from Instagram at any time.</p>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="wrap grid grid-2" style="align-items:start;gap:clamp(1.5rem,4vw,3rem)">
+    
+      <div class="card card--tan" style="border-width:4px">
+        <span class="pill">Setup needed</span>
+        <h3 style="margin-top:.8rem">This site isn't linked to a running app yet</h3>
+        <p class="mt-m">The Connect button needs a deployed instance of the app to receive Instagram's callback. Two minutes of setup, then this page becomes a one-click connect.</p>
+        <ol class="list-check mt-m">
+          <li><svg viewBox="0 0 24 24" class="" aria-hidden="true" focusable="false"><path d="m4 12 5 5L20 6"/></svg><span><strong>Deploy the app</strong> — one click on Render, or <code>npm start</code> locally.</span></li>
+          <li><svg viewBox="0 0 24 24" class="" aria-hidden="true" focusable="false"><path d="m4 12 5 5L20 6"/></svg><span><strong>Add your Meta app ID and secret</strong> to that server's environment.</span></li>
+          <li><svg viewBox="0 0 24 24" class="" aria-hidden="true" focusable="false"><path d="m4 12 5 5L20 6"/></svg><span><strong>Register the redirect URI</strong> <code>https://your-app/auth/callback</code> in the Meta dashboard.</span></li>
+          <li><svg viewBox="0 0 24 24" class="" aria-hidden="true" focusable="false"><path d="m4 12 5 5L20 6"/></svg><span><strong>Set <code>APP_URL</code></strong> in the site generator so this button points at your app.</span></li>
+        </ol>
+        <div class="btn-row mt-m">
+          <a class="btn" href="https://render.com/deploy?repo=https://github.com/itsrawdevvvvvv-arch/autodm" rel="noopener">Deploy it free</a>
+          <a class="btn btn--ghost" href="help/connect-instagram.html">Read the setup guide</a>
+        </div>
+      </div>
+    <div class="card">
+      <h3>What the flow looks like</h3>
+      <div class="step" style="margin-top:1rem">
+        <div class="step__num">1</div>
+        <div><h3 style="font-size:1rem">You press Connect</h3>
+        <p class="small">You're sent to <code>instagram.com/oauth/authorize</code> with our app ID and the three scopes we need.</p></div>
+      </div>
+      <div class="step" style="margin-top:1rem">
+        <div class="step__num">2</div>
+        <div><h3 style="font-size:1rem">You approve</h3>
+        <p class="small">Instagram shows its own permission screen — the same one every Meta app uses. You can decline any scope.</p></div>
+      </div>
+      <div class="step" style="margin-top:1rem">
+        <div class="step__num">3</div>
+        <div><h3 style="font-size:1rem">You land back connected</h3>
+        <p class="small">We exchange the one-time code for a long-lived token, store it on your server, and start polling for comments and messages.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tan">
+  <div class="wrap">
+    <div class="stack" style="max-width:44rem">
+      <span class="eyebrow">Permissions</span>
+      <h2>Exactly three, and why.</h2>
+      <p class="muted">These are the only scopes Viraloop requests. Nothing about your password, your followers list or your other accounts.</p>
+    </div>
+    <div class="table-wrap mt-l">
+      <table>
+        <caption class="sr-only">Permissions Viraloop requests and what each is used for</caption>
+        <thead><tr><th scope="col">Scope</th><th scope="col">What it allows</th><th scope="col">Why Viraloop needs it</th></tr></thead>
+        <tbody>
+          <tr><td><code>instagram_business_basic</code></td><td>Your profile: username, account type, media list</td><td>To show which account is connected and to find your posts and reels</td></tr>
+          <tr><td><code>instagram_business_manage_messages</code></td><td>Read and send direct messages</td><td>To send the reply when someone comments or messages you</td></tr>
+          <tr><td><code>instagram_business_manage_comments</code></td><td>Read comments on your media</td><td>To spot the comments that match your keywords</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted mt-m">Revoke everything in two clicks: Instagram → Settings → Apps and websites → Viraloop → Remove. Automations stop immediately.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap grid grid-2" style="align-items:start;gap:clamp(1.5rem,4vw,3rem)">
+    <div class="stack">
+      <span class="eyebrow">Before you start</span>
+      <h2>Two things Instagram requires.</h2>
+      <ul class="list-check mt-m">
+        <li><svg viewBox="0 0 24 24" class="" aria-hidden="true" focusable="false"><path d="m4 12 5 5L20 6"/></svg><span><strong>A Creator or Business account.</strong> Personal accounts can't use the messaging API. Switching is free and reversible in Instagram settings.</span></li>
+        <li><svg viewBox="0 0 24 24" class="" aria-hidden="true" focusable="false"><path d="m4 12 5 5L20 6"/></svg><span><strong>A Meta app with the Instagram product added.</strong> Your own app is enough — you don't need app review for your own account.</span></li>
+      </ul>
+      <p class="small muted">If you'd rather not go through OAuth at all, the dashboard also accepts a long-lived access token pasted directly. Same result, fewer screens.</p>
+    </div>
+    <div class="card card--ink">
+      <h3>No password, ever</h3>
+      <p class="mt-m" style="opacity:.9">Viraloop never sees your Instagram password. It receives a token issued by Meta, scoped to the permissions above, stored only on the server you deployed. Delete the server and the token is gone.</p>
+      <p class="mt-m" style="opacity:.9">This is the same authorisation model every legitimate Instagram tool uses — and the opposite of tools that ask for your login.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="wrap">
+    <div class="grid grid-2" style="align-items:start;gap:clamp(1.5rem,4vw,3rem)">
+      <div class="stack">
+        <span class="eyebrow">FAQ</span>
+        <h2>When the button misbehaves.</h2>
+        <p class="muted">Still unsure? Email <a href="mailto:hello@viraloop.co">hello@viraloop.co</a> — a human answers, usually within a day.</p>
+      </div>
+      <div class="faq"><details open><summary>The permission screen says the app is in development mode.</summary><div class="faq__a">That's expected for your own Meta app. Add your Instagram account as a tester under App roles, then connect — no app review is needed to use it yourself.</div></details><details><summary>I get “Invalid redirect URI” after approving.</summary><div class="faq__a">The URL in Meta's Valid OAuth Redirect URIs must match the server's <code>PUBLIC_URL</code> exactly, including https and the <code>/auth/callback</code> path. Meta rejects http URLs for anything other than localhost.</div></details><details><summary>It says “Insufficient permissions” when reading comments.</summary><div class="faq__a">The token was issued without <code>instagram_business_manage_comments</code>. Disconnect, then reconnect and approve every scope on the screen.</div></details><details><summary>Can I connect more than one account?</summary><div class="faq__a">One account per deployment. Connect a different account and the previous token is replaced.</div></details><details><summary>How do I disconnect?</summary><div class="faq__a">Dashboard → Account → Disconnect. That deletes the stored token. To revoke at Meta's side too, remove the app from Instagram's Apps and websites settings.</div></details></div>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-band">
+  <div class="wrap center stack">
+    <h2>Thirty seconds from here to a working automation.</h2>
+    <p class="lede" style="margin-inline:auto">Free forever, one account, no card.</p>
+    <div class="btn-row" style="justify-content:center">
+      <a class="btn" href="pricing.html#start">Get it free</a>
+      <a class="btn btn--ink" href="features.html">See the features</a>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="index.html"><span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 18c4 0 4-12 8-12 2.2 0 3 2 3 4"/><path d="M16 14c0 2-.8 4-3 4-4 0-4-12-8-12"/></svg></span><span>Viraloop</span></a>
+        <p>Free Instagram DM automation for one account. Built on Meta's official API, policy-safe by design.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="features.html">Features</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="help/index.html">Help centre</a></li>
+          <li><a href="connect.html">Connect Instagram</a></li>
+          <li><a href="pricing.html#start">Get it free</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog/index.html">Blog</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="terms.html">Terms of service</a></li>
+          <li><a href="privacy.html">Privacy policy</a></li>
+          <li><a href="mailto:hello@viraloop.co">hello@viraloop.co</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 Viraloop. Operated by [Your Legal Entity], [City], India.</span>
+      <span>Last updated 29 October 2026</span>
+    </div>
+  </div>
+</footer>
+<script src="assets/js/app.js" defer></script>
+</body>
+</html>

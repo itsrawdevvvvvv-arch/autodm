@@ -16,6 +16,13 @@ REPO_URL = "https://github.com/itsrawdevvvvvv-arch/autodm"
 DEPLOY_URL = "https://render.com/deploy?repo=" + REPO_URL
 FREE_LINE = "Free forever, one account, no card"
 
+
+def connect_href(depth=0):
+    """Where the Connect button goes: the running app if we know its URL."""
+    if APP_URL:
+        return APP_URL.rstrip("/") + "/auth/instagram"
+    return rel(depth, "connect.html")
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 NAV = [
@@ -23,6 +30,7 @@ NAV = [
     ("pricing", "Pricing", "pricing.html"),
     ("blog", "Blog", "blog/index.html"),
     ("help", "Help", "help/index.html"),
+    ("connect", "Connect", "connect.html"),
     ("about", "About", "about.html"),
 ]
 
@@ -156,6 +164,7 @@ def footer(depth=0):
           <li><a href="{r('features.html')}">Features</a></li>
           <li><a href="{r('pricing.html')}">Pricing</a></li>
           <li><a href="{r('help/index.html')}">Help centre</a></li>
+          <li><a href="{r('connect.html')}">Connect Instagram</a></li>
           <li><a href="{r('pricing.html')}#start">Get it free</a></li>
         </ul>
       </div>

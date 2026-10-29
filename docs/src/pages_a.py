@@ -1,6 +1,6 @@
 """Pages: home, features, pricing."""
 from layout import (page, rel, icon, faq_block, cta_band, ORG_LD, APP_LD, SITE, EMAIL,
-                    DEPLOY_URL, REPO_URL, APP_URL)
+                    DEPLOY_URL, REPO_URL, APP_URL, connect_href)
 
 TICK = ["Policy-safe by design", "No follow-gating", "Official Meta API",
         "Replies within a minute", "Built for creators"]
@@ -43,7 +43,7 @@ HOME = f"""
       <h1>Turn every comment into a <span class="hl">conversation.</span></h1>
       <p class="lede">Viraloop answers comments and story replies with the right DM within a minute — so the people who were ready to buy hear from you while they still care.</p>
       <div class="btn-row">
-        <a class="btn" href="pricing.html#start">Get it free</a>
+        <a class="btn" href="connect.html">Connect Instagram</a>
         <a class="btn btn--ghost" href="#how">See how it works</a>
       </div>
       <p class="hero__note muted">

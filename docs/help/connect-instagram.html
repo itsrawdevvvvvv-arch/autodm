@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Connect your Instagram account | Viraloop help</title>
-<meta name="description" content="Requirements, permissions and fixes for the most common connection errors when linking Instagram to Viraloop.">
+<meta name="description" content="The one-click OAuth flow, the permissions it asks for, the requirements, and fixes for the usual connection errors.">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://itsrawdevvvvvv-arch.github.io/autodm/help/connect-instagram.html">
 <meta name="theme-color" content="#f4ead9">
@@ -12,7 +12,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Viraloop">
 <meta property="og:title" content="Connect your Instagram account | Viraloop help">
-<meta property="og:description" content="Requirements, permissions and fixes for the most common connection errors when linking Instagram to Viraloop.">
+<meta property="og:description" content="The one-click OAuth flow, the permissions it asks for, the requirements, and fixes for the usual connection errors.">
 <meta property="og:url" content="https://itsrawdevvvvvv-arch.github.io/autodm/help/connect-instagram.html">
 <meta property="og:image" content="https://itsrawdevvvvvv-arch.github.io/autodm/assets/img/og.png">
 <meta property="og:image:width" content="1200">
@@ -20,7 +20,7 @@
 <meta property="og:image:alt" content="Viraloop — Instagram DM automation for creators">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Connect your Instagram account | Viraloop help">
-<meta name="twitter:description" content="Requirements, permissions and fixes for the most common connection errors when linking Instagram to Viraloop.">
+<meta name="twitter:description" content="The one-click OAuth flow, the permissions it asks for, the requirements, and fixes for the usual connection errors.">
 <meta name="twitter:image" content="https://itsrawdevvvvvv-arch.github.io/autodm/assets/img/og.png">
 <link rel="preload" href="../assets/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../assets/fonts/space-grotesk-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -30,7 +30,7 @@
 <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
 <link rel="sitemap" type="application/xml" href="../sitemap.xml">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://itsrawdevvvvvv-arch.github.io/autodm/"},{"@type":"ListItem","position":2,"name":"Help","item":"https://itsrawdevvvvvv-arch.github.io/autodm/help/"},{"@type":"ListItem","position":3,"name":"Connect your Instagram account"}]}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Connect your Instagram account","description":"Requirements, permissions and fixes for the most common connection errors when linking Instagram to Viraloop.","author":{"@type":"Organization","name":"Viraloop"},"publisher":{"@type":"Organization","name":"Viraloop"},"dateModified":"2026-10-29","mainEntityOfPage":"https://itsrawdevvvvvv-arch.github.io/autodm/help/connect-instagram.html"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Connect your Instagram account","description":"The one-click OAuth flow, the permissions it asks for, the requirements, and fixes for the usual connection errors.","author":{"@type":"Organization","name":"Viraloop"},"publisher":{"@type":"Organization","name":"Viraloop"},"dateModified":"2026-10-29","mainEntityOfPage":"https://itsrawdevvvvvv-arch.github.io/autodm/help/connect-instagram.html"}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -39,7 +39,7 @@
     <a class="brand" href="../index.html"><span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 18c4 0 4-12 8-12 2.2 0 3 2 3 4"/><path d="M16 14c0 2-.8 4-3 4-4 0-4-12-8-12"/></svg></span><span>Viraloop</span></a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu"><span></span></button>
     <nav class="nav" id="site-nav" aria-label="Primary">
-      <a href="../features.html">Features</a><a href="../pricing.html">Pricing</a><a href="../blog/index.html">Blog</a><a href="../help/index.html" aria-current="page">Help</a><a href="../about.html">About</a>
+      <a href="../features.html">Features</a><a href="../pricing.html">Pricing</a><a href="../blog/index.html">Blog</a><a href="../help/index.html" aria-current="page">Help</a><a href="../connect.html">Connect</a><a href="../about.html">About</a>
     </nav>
     <div class="header__cta">
       <a class="btn btn--ghost btn--sm" href="../pricing.html#start">Get it free</a>
@@ -54,42 +54,54 @@
       <nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><a href="../index.html">Home</a></li><li><a href="../help/index.html">Help</a></li><li aria-current="page">Connect your Instagram account</li></ol></nav>
       <span class="eyebrow">Setup</span>
       <h1 style="font-size:clamp(1.9rem,4.2vw,3rem)">Connect your Instagram account</h1>
-      <p class="muted" style="font-size:.85rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase">4 min read · Updated 29 October 2026</p>
+      <p class="muted" style="font-size:.85rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase">5 min read · Updated 29 October 2026</p>
     </div>
   </header>
   <div class="section">
     <div class="wrap grid grid-2" style="align-items:start;gap:clamp(1.5rem,4vw,3rem)">
       <div class="prose">
-<p>Viraloop connects through Meta's official Instagram messaging API. That means an approval flow rather than a password, and a connection you can revoke at any time.</p>
+<p>There are two ways to connect: the <strong>Connect Instagram</strong> button, which runs Meta's standard authorisation flow, or pasting a long-lived token by hand. Both end in the same place.</p>
 
-<h2 id="requirements">What you need</h2>
+<h2 id="oneclick">The one-click flow</h2>
+<ol>
+  <li>Press <strong>Connect Instagram</strong> in the dashboard (or on the <a href="../connect.html">connect page</a>).</li>
+  <li>Instagram opens its own permission screen. Approve the three scopes listed below.</li>
+  <li>You land back in the dashboard with the account connected and polling already running.</li>
+</ol>
+<p>Behind that: the app sends you to <code>instagram.com/oauth/authorize</code> with a one-time <code>state</code> value, exchanges the returned code for a long-lived token (~60 days), and stores it on your server only.</p>
+
+<h2 id="scopes">The three permissions</h2>
 <ul>
-  <li>An Instagram <strong>Creator</strong> or <strong>Business</strong> account. Personal accounts can't use the messaging API.</li>
-  <li>A Facebook page linked to the Instagram account.</li>
-  <li>Admin access to both.</li>
+  <li><code>instagram_business_basic</code> — your profile and media list, so the app knows which posts to watch.</li>
+  <li><code>instagram_business_manage_messages</code> — read and send DMs, so it can reply.</li>
+  <li><code>instagram_business_manage_comments</code> — read comments, so it can spot keyword matches.</li>
 </ul>
 
-<h2 id="steps">Connecting</h2>
-<ol>
-  <li>In Viraloop, open <strong>Settings → Accounts → Connect Instagram</strong>.</li>
-  <li>Approve the permissions shown. We ask for messaging access and basic profile information — nothing else.</li>
-  <li>Choose the Instagram account and the linked Facebook page when prompted.</li>
-  <li>You'll return to Viraloop with the account connected.</li>
-</ol>
+<h2 id="requirements">Requirements</h2>
+<ul>
+  <li>An Instagram <strong>Creator</strong> or <strong>Business</strong> account.</li>
+  <li>A Meta app with the Instagram product added, and your account added as a tester.</li>
+  <li><code>META_APP_ID</code> and <code>META_APP_SECRET</code> set on the server.</li>
+  <li><code>PUBLIC_URL</code> set to your deployed https URL, and that exact URL registered as a Valid OAuth Redirect URI (ending <code>/auth/callback</code>).</li>
+</ul>
+<p>The dashboard tells you which of these is missing: open <strong>Account</strong> and read the setup note, or hit <code>/api/oauth-check</code> on your server.</p>
+
+<h2 id="token">Connecting with a token instead</h2>
+<p>In the Meta dashboard, generate a long-lived token with the three scopes above and paste it into <strong>Account → paste an access token</strong>. Useful when you can't set up a redirect URI, or when you want to connect on a machine with no public URL.</p>
 
 <h2 id="revoke">Revoking access</h2>
-<p>You can disconnect from Viraloop's settings, or from Instagram's own <strong>Apps and websites</strong> screen. Disconnecting stops all automations immediately and deletes stored message logs within 30 days.</p>
+<p>Dashboard → <strong>Disconnect</strong> deletes the stored token. To revoke at Meta's side as well, remove the app in Instagram → Settings → Apps and websites. Disconnecting stops all automations immediately.</p>
 
 <h2 id="errors">Common errors</h2>
 <ul>
-  <li><strong>“No professional account found.”</strong> The account is still personal. Switch it in Instagram: Settings → Account type.</li>
-  <li><strong>“Page not linked.”</strong> Link a Facebook page to the Instagram account, then retry.</li>
-  <li><strong>Permission screen loops.</strong> Usually a cookie or third-party blocker. Try a private window with extensions disabled.</li>
-  <li><strong>Connected, but nothing sends.</strong> See <a href="troubleshooting.html">troubleshooting</a>.</li>
+  <li><strong>Invalid redirect URI</strong> — the registered URI and <code>PUBLIC_URL</code> differ. They must match character for character, https included.</li>
+  <li><strong>App in development mode</strong> — add your account as a tester on the Meta app; no app review needed for personal use.</li>
+  <li><strong>Insufficient permissions</strong> — a scope was declined. Reconnect and approve all three.</li>
+  <li><strong>Link expired</strong> — the <code>state</code> value is only valid for ten minutes. Press Connect again.</li>
 </ul>
 </div>
       <aside class="stack">
-        <div class="card card--tan"><h3 style="font-size:1rem">On this page</h3><ul class="list-check mt-m" style="font-size:.9rem"><ul><li><a href="#requirements">What you need</a></li><li><a href="#steps">Connecting</a></li><li><a href="#revoke">Revoking access</a></li><li><a href="#errors">Common errors</a></li></ul></ul></div>
+        <div class="card card--tan"><h3 style="font-size:1rem">On this page</h3><ul class="list-check mt-m" style="font-size:.9rem"><ul><li><a href="#oneclick">The one-click flow</a></li><li><a href="#scopes">The three permissions</a></li><li><a href="#requirements">Requirements</a></li><li><a href="#token">Connecting with a token instead</a></li><li><a href="#revoke">Revoking access</a></li><li><a href="#errors">Common errors</a></li></ul></ul></div>
         <div class="card"><h3 style="font-size:1rem">Need a hand?</h3><p class="mt-m" style="font-size:.9rem">Email <a href="mailto:hello@viraloop.co">hello@viraloop.co</a> — one working day, usually less.</p></div>
       </aside>
     </div>
@@ -110,6 +122,7 @@
           <li><a href="../features.html">Features</a></li>
           <li><a href="../pricing.html">Pricing</a></li>
           <li><a href="../help/index.html">Help centre</a></li>
+          <li><a href="../connect.html">Connect Instagram</a></li>
           <li><a href="../pricing.html#start">Get it free</a></li>
         </ul>
       </div>

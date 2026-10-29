@@ -8,6 +8,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const crypto = require('crypto');
 const data = require('./data');
 const meta = require('./meta');
 const { verifySignature, parseEvents } = require('./webhook');
@@ -225,28 +226,80 @@ app.post('/api/scan', async (req, res) => {
   res.json({ ok: true, result, status: poller.status() });
 });
 
-/* ================= OAuth (optional) ================= */
+/* ================= OAuth ================= */
+
+/* Short-lived CSRF state values, one per authorisation attempt. */
+const oauthStates = new Map();
+const STATE_TTL = 10 * 60 * 1000;
+
+function issueState() {
+  const now = Date.now();
+  for (const [k, t] of oauthStates) if (now - t > STATE_TTL) oauthStates.delete(k);
+  const state = crypto.randomBytes(16).toString('hex');
+  oauthStates.set(state, now);
+  return state;
+}
+function consumeState(state) {
+  if (!state || !oauthStates.has(state)) return false;
+  const t = oauthStates.get(state);
+  oauthStates.delete(state);
+  return Date.now() - t <= STATE_TTL;
+}
+const dashboardUrl = () => (process.env.DASHBOARD_URL || '').replace(/\/$/, '') || '';
+
+/* What is still missing for the "Connect Instagram" button to work. */
+app.get('/api/oauth-check', (_req, res) => {
+  const redirect = meta.redirectUri();
+  const hints = [];
+  if (!process.env.META_APP_ID) hints.push('Set META_APP_ID on the server (Meta app → Settings → Basic).');
+  if (!process.env.META_APP_SECRET) hints.push('Set META_APP_SECRET on the server.');
+  if (!/^https:\/\//.test(redirect)) hints.push('PUBLIC_URL must be an https URL — Meta rejects http redirect URIs (localhost excepted).');
+  if (process.env.META_APP_ID) {
+    hints.push('Add ' + redirect + ' to Meta app → Instagram → API setup → Valid OAuth Redirect URIs.');
+  }
+  res.json({
+    ready: !!(process.env.META_APP_ID && process.env.META_APP_SECRET) && /^https:\/\//.test(redirect),
+    appIdSet: !!process.env.META_APP_ID,
+    secretSet: !!process.env.META_APP_SECRET,
+    redirectUri: redirect,
+    loginRoute: meta.ROUTE,
+    scopes: meta.ROUTE === 'facebook' ? meta.FB_SCOPES : meta.SCOPES,
+    hints,
+  });
+});
 
 app.get('/auth/instagram', (_req, res) => {
   if (!meta.configured()) {
     return res.status(400).send(notice('Meta app not configured',
-      'Add META_APP_ID and META_APP_SECRET to the environment, or connect with an access token instead.'));
+      'Add META_APP_ID and META_APP_SECRET to the server environment, then restart. You can still connect with an access token from the dashboard.'));
   }
-  res.redirect(meta.authorizeUrl('viraloop'));
+  res.redirect(meta.authorizeUrl(issueState()));
 });
 
 app.get('/auth/callback', async (req, res) => {
-  const { code, error, error_description } = req.query;
-  if (error) return res.status(400).send(notice('Authorization failed', String(error_description || error)));
-  if (!code) return res.status(400).send(notice('Missing code', 'No authorization code returned.'));
+  const { code, error, error_description, state } = req.query;
+  const back = (query) => res.redirect(dashboardUrl() + '/?' + query);
+
+  if (error) return back('connect_error=' + encodeURIComponent(String(error_description || error)));
+  if (!consumeState(state)) {
+    return back('connect_error=' + encodeURIComponent('That link expired. Press Connect Instagram again.'));
+  }
+  if (!code) return back('connect_error=' + encodeURIComponent('Instagram did not return an authorisation code.'));
+
   try {
     const token = await meta.exchangeCode(code);
     const me = await meta.getAccount(token);
-    data.account.set({ connected: true, token, igId: me.id || me.user_id || '', handle: me.username || '' });
-    data.activity.add({ id: id(), type: 'system', title: 'Account connected', detail: 'Authorised via Meta login', ts: Date.now() });
-    res.redirect('/?connected=1');
+    const acc = data.account.set({
+      connected: true, token,
+      igId: me.id || me.user_id || '',
+      handle: me.username || '',
+    });
+    data.activity.add({ id: id(), type: 'system', title: 'Account connected', detail: 'Authorised via Instagram login', ts: Date.now() });
+    const s = data.settings.get();
+    if ((s.receiveMode || 'poll') === 'poll' && !poller.status().running) poller.start(s.pollSeconds);
+    return back('connected=1&handle=' + encodeURIComponent(acc.handle || ''));
   } catch (e) {
-    res.status(500).send(notice('Could not complete connection', e.message));
+    return back('connect_error=' + encodeURIComponent(e.message));
   }
 });
 

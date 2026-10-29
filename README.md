@@ -57,7 +57,37 @@ that delay; the software is the same.
 
 You need an Instagram **Creator** or **Business** account (not personal).
 
-**Fastest route — paste a token:**
+### The one-click flow (recommended)
+
+The dashboard has a **Connect Instagram** button that runs Meta's standard OAuth
+flow: press it → Instagram's permission screen → back to the dashboard, connected.
+
+To enable it:
+
+1. **Create a Meta app** at [developers.facebook.com](https://developers.facebook.com)
+   → *Create app* → add the **Instagram** product.
+2. **Add your Instagram account as a tester**: App roles → Roles → add Instagram
+   tester. (No app review needed for your own account.)
+3. **Register the redirect URI**: Instagram → *API setup with Instagram login* →
+   *Valid OAuth Redirect URIs* → add `https://<your-app>/auth/callback`
+   — must match exactly, https included.
+4. **Set the environment** on the server:
+   ```
+   META_APP_ID=...
+   META_APP_SECRET=...
+   PUBLIC_URL=https://<your-app>
+   ```
+5. Restart, open the dashboard, press **Connect Instagram**.
+
+Scopes requested: `instagram_business_basic`,
+`instagram_business_manage_messages`, `instagram_business_manage_comments`.
+
+The dashboard tells you what is still missing — it calls `/api/oauth-check` and
+lists the exact gaps under **Account**. Every authorisation attempt carries a
+single-use `state` value (10-minute TTL) and lands back on the dashboard with
+`?connected=1` or `?connect_error=…`.
+
+### Or paste a token
 
 1. Create an app at [developers.facebook.com](https://developers.facebook.com) →
    add the **Instagram** product.

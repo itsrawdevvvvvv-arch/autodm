@@ -68,6 +68,33 @@ async function loadStatus() {
   return s;
 }
 
+async function loadOauth() {
+  try {
+    const o = await api('/api/oauth-check');
+    const btn = $('#oauth-btn');
+    const hints = $('#oauth-hints');
+    const list = $('#oauth-hint-list');
+    const pill = $('#oauth-pill');
+    if (o.ready) {
+      btn.removeAttribute('aria-disabled');
+      btn.style.opacity = '';
+      btn.style.pointerEvents = '';
+      hints.hidden = true;
+      pill.className = 'pill pill--on';
+      pill.innerHTML = '<span class="dot"></span>Ready to connect';
+    } else {
+      btn.style.opacity = '.55';
+      btn.style.pointerEvents = 'none';
+      btn.setAttribute('aria-disabled', 'true');
+      hints.hidden = false;
+      list.innerHTML = (o.hints || []).map(h => '<li>' + escapeHtml(h) + '</li>').join('');
+      pill.className = 'pill pill--off';
+      pill.innerHTML = '<span class="dot"></span>Setup needed';
+    }
+    return o;
+  } catch (e) { return null; }
+}
+
 async function loadAccount() {
   const a = await api('/api/account');
   const connected = !!a.connected;
@@ -210,6 +237,21 @@ function escapeHtml(str) {
 }
 
 /* ---------------- wiring ---------------- */
+
+/* Instagram hands us back with ?connected=1 or ?connect_error=… */
+function handleReturn() {
+  const params = new URLSearchParams(location.search);
+  if (params.get('connected')) {
+    const handle = params.get('handle');
+    toast(handle ? 'Connected as @' + handle : 'Instagram connected');
+  } else if (params.get('connect_error')) {
+    toast('Could not connect: ' + params.get('connect_error'));
+  } else {
+    return false;
+  }
+  history.replaceState({}, '', location.pathname + '#account');
+  return true;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   /* account */
@@ -381,12 +423,13 @@ document.addEventListener('DOMContentLoaded', () => {
     refreshAll().catch(() => {});
   });
 
-  refreshAll();
+  const returning = handleReturn();
+  refreshAll().then(() => { if (returning) loadAccount(); });
 });
 
 async function refreshAll() {
   try {
-    await Promise.all([loadStatus(), loadAccount(), loadRules(), loadActivity(), loadSettings()]);
+    await Promise.all([loadStatus(), loadOauth(), loadAccount(), loadRules(), loadActivity(), loadSettings()]);
   } catch (e) {
     if (e.message !== 'unauthorised') toast(e.message);
   }

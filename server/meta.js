@@ -14,8 +14,8 @@ const ROUTE = (process.env.LOGIN_ROUTE || 'instagram').toLowerCase();
 const PUBLIC_URL = (process.env.PUBLIC_URL || process.env.RENDER_EXTERNAL_URL || 'http://localhost:3000').replace(/\/$/, '');
 const GRAPH = 'https://graph.instagram.com/v23.0';
 const FB_GRAPH = 'https://graph.facebook.com/v21.0';
-const SCOPES = 'instagram_business_basic,instagram_business_manage_messages';
-const FB_SCOPES = 'instagram_basic,instagram_manage_messages,pages_manage_metadata,pages_show_list,business_management';
+const SCOPES = 'instagram_business_basic,instagram_business_manage_messages,instagram_business_manage_comments';
+const FB_SCOPES = 'instagram_basic,instagram_manage_messages,instagram_manage_comments,pages_manage_metadata,pages_show_list,business_management';
 
 const configured = () => !!(APP_ID && APP_SECRET);
 const redirectUri = () => PUBLIC_URL + '/auth/callback';
@@ -168,5 +168,5 @@ async function getProfile(token) {
   return j;
 }
 
-module.exports = { configured, getRecentMedia, getMediaComments, getProfile, authorizeUrl, exchangeCode, getAccount, sendDM, sendPrivateReply, replyToComment,
+module.exports = { configured, redirectUri, SCOPES, FB_SCOPES, getRecentMedia, getMediaComments, getProfile, authorizeUrl, exchangeCode, getAccount, sendDM, sendPrivateReply, replyToComment,
   getConversations, getConversationMessages, getMessage, refreshToken, ROUTE, PUBLIC_URL };

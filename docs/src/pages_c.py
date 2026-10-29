@@ -1,6 +1,6 @@
 """Pages: help centre (index + articles), terms, privacy, 404."""
 from layout import (page, icon, cta_band, breadcrumbs, breadcrumb_ld, EMAIL,
-                    SITE, BASE_PATH, UPDATED, faq_block)
+                    SITE, BASE_PATH, UPDATED, faq_block, APP_URL, DEPLOY_URL)
 
 # ---------------------------------------------------------------- HELP ARTICLES
 
@@ -40,35 +40,47 @@ HELP = [
 """),
     dict(slug="connect-instagram", title="Connect your Instagram account",
          h1="Connect your Instagram account",
-         desc="Requirements, permissions and fixes for the most common connection errors when linking Instagram to Viraloop.",
-         tag="Setup", mins=4,
+         desc="The one-click OAuth flow, the permissions it asks for, the requirements, and fixes for the usual connection errors.",
+         tag="Setup", mins=5,
          body="""
-<p>Viraloop connects through Meta's official Instagram messaging API. That means an approval flow rather than a password, and a connection you can revoke at any time.</p>
+<p>There are two ways to connect: the <strong>Connect Instagram</strong> button, which runs Meta's standard authorisation flow, or pasting a long-lived token by hand. Both end in the same place.</p>
 
-<h2 id="requirements">What you need</h2>
+<h2 id="oneclick">The one-click flow</h2>
+<ol>
+  <li>Press <strong>Connect Instagram</strong> in the dashboard (or on the <a href="../connect.html">connect page</a>).</li>
+  <li>Instagram opens its own permission screen. Approve the three scopes listed below.</li>
+  <li>You land back in the dashboard with the account connected and polling already running.</li>
+</ol>
+<p>Behind that: the app sends you to <code>instagram.com/oauth/authorize</code> with a one-time <code>state</code> value, exchanges the returned code for a long-lived token (~60 days), and stores it on your server only.</p>
+
+<h2 id="scopes">The three permissions</h2>
 <ul>
-  <li>An Instagram <strong>Creator</strong> or <strong>Business</strong> account. Personal accounts can't use the messaging API.</li>
-  <li>A Facebook page linked to the Instagram account.</li>
-  <li>Admin access to both.</li>
+  <li><code>instagram_business_basic</code> — your profile and media list, so the app knows which posts to watch.</li>
+  <li><code>instagram_business_manage_messages</code> — read and send DMs, so it can reply.</li>
+  <li><code>instagram_business_manage_comments</code> — read comments, so it can spot keyword matches.</li>
 </ul>
 
-<h2 id="steps">Connecting</h2>
-<ol>
-  <li>In Viraloop, open <strong>Settings → Accounts → Connect Instagram</strong>.</li>
-  <li>Approve the permissions shown. We ask for messaging access and basic profile information — nothing else.</li>
-  <li>Choose the Instagram account and the linked Facebook page when prompted.</li>
-  <li>You'll return to Viraloop with the account connected.</li>
-</ol>
+<h2 id="requirements">Requirements</h2>
+<ul>
+  <li>An Instagram <strong>Creator</strong> or <strong>Business</strong> account.</li>
+  <li>A Meta app with the Instagram product added, and your account added as a tester.</li>
+  <li><code>META_APP_ID</code> and <code>META_APP_SECRET</code> set on the server.</li>
+  <li><code>PUBLIC_URL</code> set to your deployed https URL, and that exact URL registered as a Valid OAuth Redirect URI (ending <code>/auth/callback</code>).</li>
+</ul>
+<p>The dashboard tells you which of these is missing: open <strong>Account</strong> and read the setup note, or hit <code>/api/oauth-check</code> on your server.</p>
+
+<h2 id="token">Connecting with a token instead</h2>
+<p>In the Meta dashboard, generate a long-lived token with the three scopes above and paste it into <strong>Account → paste an access token</strong>. Useful when you can't set up a redirect URI, or when you want to connect on a machine with no public URL.</p>
 
 <h2 id="revoke">Revoking access</h2>
-<p>You can disconnect from Viraloop's settings, or from Instagram's own <strong>Apps and websites</strong> screen. Disconnecting stops all automations immediately and deletes stored message logs within 30 days.</p>
+<p>Dashboard → <strong>Disconnect</strong> deletes the stored token. To revoke at Meta's side as well, remove the app in Instagram → Settings → Apps and websites. Disconnecting stops all automations immediately.</p>
 
 <h2 id="errors">Common errors</h2>
 <ul>
-  <li><strong>“No professional account found.”</strong> The account is still personal. Switch it in Instagram: Settings → Account type.</li>
-  <li><strong>“Page not linked.”</strong> Link a Facebook page to the Instagram account, then retry.</li>
-  <li><strong>Permission screen loops.</strong> Usually a cookie or third-party blocker. Try a private window with extensions disabled.</li>
-  <li><strong>Connected, but nothing sends.</strong> See <a href="troubleshooting.html">troubleshooting</a>.</li>
+  <li><strong>Invalid redirect URI</strong> — the registered URI and <code>PUBLIC_URL</code> differ. They must match character for character, https included.</li>
+  <li><strong>App in development mode</strong> — add your account as a tester on the Meta app; no app review needed for personal use.</li>
+  <li><strong>Insufficient permissions</strong> — a scope was declined. Reconnect and approve all three.</li>
+  <li><strong>Link expired</strong> — the <code>state</code> value is only valid for ten minutes. Press Connect again.</li>
 </ul>
 """),
     dict(slug="comment-triggers", title="Keywords and matching",
@@ -259,6 +271,135 @@ def help_page(a):
     page(path, f"{a['title']} | Viraloop help", a["desc"], body, active="help", depth=depth, jsonld=ld)
 
 
+
+
+# ---------------------------------------------------------------- CONNECT PAGE
+
+def connect_cta():
+    """The button when the app is deployed, setup steps when it isn't."""
+    if APP_URL:
+        return f"""
+      <div class="card" style="border-width:4px">
+        <span class="pill">Ready</span>
+        <h3 style="margin-top:.8rem">Start the authorisation</h3>
+        <p class="mt-m">You'll be taken to Instagram, asked to approve three permissions, then brought straight back here with your account connected.</p>
+        <div class="btn-row mt-m">
+          <a class="btn" href="{APP_URL.rstrip('/')}/auth/instagram" rel="noopener">Connect Instagram</a>
+          <a class="btn btn--ghost" href="{APP_URL.rstrip('/')}/" rel="noopener">Open the dashboard</a>
+        </div>
+        <p class="small muted" style="margin-top:.9rem">Takes about thirty seconds. No password is shared with Viraloop at any point.</p>
+      </div>"""
+    return f"""
+      <div class="card card--tan" style="border-width:4px">
+        <span class="pill">Setup needed</span>
+        <h3 style="margin-top:.8rem">This site isn't linked to a running app yet</h3>
+        <p class="mt-m">The Connect button needs a deployed instance of the app to receive Instagram's callback. Two minutes of setup, then this page becomes a one-click connect.</p>
+        <ol class="list-check mt-m">
+          <li>{icon('check')}<span><strong>Deploy the app</strong> — one click on Render, or <code>npm start</code> locally.</span></li>
+          <li>{icon('check')}<span><strong>Add your Meta app ID and secret</strong> to that server's environment.</span></li>
+          <li>{icon('check')}<span><strong>Register the redirect URI</strong> <code>https://your-app/auth/callback</code> in the Meta dashboard.</span></li>
+          <li>{icon('check')}<span><strong>Set <code>APP_URL</code></strong> in the site generator so this button points at your app.</span></li>
+        </ol>
+        <div class="btn-row mt-m">
+          <a class="btn" href="{DEPLOY_URL}" rel="noopener">Deploy it free</a>
+          <a class="btn btn--ghost" href="help/connect-instagram.html">Read the setup guide</a>
+        </div>
+      </div>"""
+
+
+CONNECT_PAGE = f"""
+<section class="hero">
+  <div class="wrap stack" style="max-width:44rem">
+    <span class="eyebrow">Connect</span>
+    <h1>Connect your Instagram.</h1>
+    <p class="lede">One button, the standard Instagram permission screen, thirty seconds. Your password never touches Viraloop — you approve specific permissions and can revoke them from Instagram at any time.</p>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="wrap grid grid-2" style="align-items:start;gap:clamp(1.5rem,4vw,3rem)">
+    {connect_cta()}
+    <div class="card">
+      <h3>What the flow looks like</h3>
+      <div class="step" style="margin-top:1rem">
+        <div class="step__num">1</div>
+        <div><h3 style="font-size:1rem">You press Connect</h3>
+        <p class="small">You're sent to <code>instagram.com/oauth/authorize</code> with our app ID and the three scopes we need.</p></div>
+      </div>
+      <div class="step" style="margin-top:1rem">
+        <div class="step__num">2</div>
+        <div><h3 style="font-size:1rem">You approve</h3>
+        <p class="small">Instagram shows its own permission screen — the same one every Meta app uses. You can decline any scope.</p></div>
+      </div>
+      <div class="step" style="margin-top:1rem">
+        <div class="step__num">3</div>
+        <div><h3 style="font-size:1rem">You land back connected</h3>
+        <p class="small">We exchange the one-time code for a long-lived token, store it on your server, and start polling for comments and messages.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tan">
+  <div class="wrap">
+    <div class="stack" style="max-width:44rem">
+      <span class="eyebrow">Permissions</span>
+      <h2>Exactly three, and why.</h2>
+      <p class="muted">These are the only scopes Viraloop requests. Nothing about your password, your followers list or your other accounts.</p>
+    </div>
+    <div class="table-wrap mt-l">
+      <table>
+        <caption class="sr-only">Permissions Viraloop requests and what each is used for</caption>
+        <thead><tr><th scope="col">Scope</th><th scope="col">What it allows</th><th scope="col">Why Viraloop needs it</th></tr></thead>
+        <tbody>
+          <tr><td><code>instagram_business_basic</code></td><td>Your profile: username, account type, media list</td><td>To show which account is connected and to find your posts and reels</td></tr>
+          <tr><td><code>instagram_business_manage_messages</code></td><td>Read and send direct messages</td><td>To send the reply when someone comments or messages you</td></tr>
+          <tr><td><code>instagram_business_manage_comments</code></td><td>Read comments on your media</td><td>To spot the comments that match your keywords</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted mt-m">Revoke everything in two clicks: Instagram → Settings → Apps and websites → Viraloop → Remove. Automations stop immediately.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap grid grid-2" style="align-items:start;gap:clamp(1.5rem,4vw,3rem)">
+    <div class="stack">
+      <span class="eyebrow">Before you start</span>
+      <h2>Two things Instagram requires.</h2>
+      <ul class="list-check mt-m">
+        <li>{icon('check')}<span><strong>A Creator or Business account.</strong> Personal accounts can't use the messaging API. Switching is free and reversible in Instagram settings.</span></li>
+        <li>{icon('check')}<span><strong>A Meta app with the Instagram product added.</strong> Your own app is enough — you don't need app review for your own account.</span></li>
+      </ul>
+      <p class="small muted">If you'd rather not go through OAuth at all, the dashboard also accepts a long-lived access token pasted directly. Same result, fewer screens.</p>
+    </div>
+    <div class="card card--ink">
+      <h3>No password, ever</h3>
+      <p class="mt-m" style="opacity:.9">Viraloop never sees your Instagram password. It receives a token issued by Meta, scoped to the permissions above, stored only on the server you deployed. Delete the server and the token is gone.</p>
+      <p class="mt-m" style="opacity:.9">This is the same authorisation model every legitimate Instagram tool uses — and the opposite of tools that ask for your login.</p>
+    </div>
+  </div>
+</section>
+
+{faq_block([
+  ("The permission screen says the app is in development mode.",
+   "That's expected for your own Meta app. Add your Instagram account as a tester under App roles, then connect — no app review is needed to use it yourself."),
+  ("I get “Invalid redirect URI” after approving.",
+   "The URL in Meta's Valid OAuth Redirect URIs must match the server's <code>PUBLIC_URL</code> exactly, including https and the <code>/auth/callback</code> path. Meta rejects http URLs for anything other than localhost."),
+  ("It says “Insufficient permissions” when reading comments.",
+   "The token was issued without <code>instagram_business_manage_comments</code>. Disconnect, then reconnect and approve every scope on the screen."),
+  ("Can I connect more than one account?",
+   "One account per deployment. Connect a different account and the previous token is replaced."),
+  ("How do I disconnect?",
+   "Dashboard → Account → Disconnect. That deletes the stored token. To revoke at Meta's side too, remove the app from Instagram's Apps and websites settings."),
+], heading="When the button misbehaves.")}
+
+{cta_band(heading="Thirty seconds from here to a working automation.",
+         sub="Free forever, one account, no card.",
+         label="Get it free", href="pricing.html#start")}
+"""
+
+
 # ---------------------------------------------------------------- LEGAL
 
 TERMS = f"""
@@ -429,6 +570,10 @@ def build():
          jsonld=[breadcrumb_ld([("Home", "index.html"), ("Help", None)], "help/index.html", 1)])
     for a in HELP:
         help_page(a)
+    page("connect.html",
+         "Connect your Instagram | Viraloop",
+         "Connect your Instagram account to Viraloop in one click. The exact permissions requested, what each is used for, and how to revoke access at any time.",
+         CONNECT_PAGE, active="connect")
     page("terms.html", "Terms of service | Viraloop",
          "Viraloop's terms of service: acceptable use, plans and payment, data ownership, liability and governing law (India).",
          TERMS, active="")

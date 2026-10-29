@@ -50,31 +50,38 @@
       </div>
 
       <div id="account-disconnected">
-        <div class="grid grid--2">
-          <div class="card">
-            <h3>Connect with an access token</h3>
-            <p class="small muted" style="margin:.4rem 0 .9rem">Fastest route. Works without a Meta app review, and the token can be revoked any time from Instagram settings.</p>
-            <form id="token-form">
-              <div class="field">
-                <label for="token">Long-lived Instagram access token</label>
-                <textarea id="token" name="token" rows="3" placeholder="IGAA..." required spellcheck="false"></textarea>
-                <span class="hint">From the Meta app dashboard → Instagram → API setup. Starts with <code>IGAA</code>.</span>
-              </div>
-              <button class="btn" type="submit">Connect account</button>
-            </form>
-            <p class="small muted" style="margin-top:.8rem" id="oauth-wrap" hidden>
-              Or <a href="/auth/instagram">sign in with Instagram</a> — available because a Meta app is configured on this server.
-            </p>
+        <div class="grid grid--2" style="align-items:start">
+          <div class="card" style="border-width:4px">
+            <span class="pill pill--off" id="oauth-pill"><span class="dot"></span>Not connected</span>
+            <h3 style="margin-top:.8rem">Connect with Instagram</h3>
+            <p class="small muted" style="margin:.4rem 0 1rem">You'll be sent to Instagram to approve three permissions, then brought straight back here. No password is shared with Viraloop.</p>
+            <a class="btn" id="oauth-btn" href="/auth/instagram">Connect Instagram</a>
+            <div id="oauth-hints" hidden style="margin-top:1rem">
+              <p class="small" style="font-weight:700;color:var(--clay)">Setup still needed on the server:</p>
+              <ul class="small muted" id="oauth-hint-list" style="margin-top:.35rem;padding-left:1.1rem"></ul>
+              <p class="small muted" style="margin-top:.5rem">Full walkthrough: <a href="https://itsrawdevvvvvv-arch.github.io/autodm/help/connect-instagram.html" target="_blank" rel="noopener">connect guide</a>.</p>
+            </div>
+            <details style="margin-top:1rem">
+              <summary class="small" style="cursor:pointer;font-weight:700">Or paste an access token instead</summary>
+              <form id="token-form" style="margin-top:.7rem">
+                <div class="field">
+                  <label for="token">Long-lived Instagram access token</label>
+                  <textarea id="token" name="token" rows="3" placeholder="IGAA..." required spellcheck="false"></textarea>
+                  <span class="hint">From the Meta app dashboard. Starts with <code>IGAA</code>.</span>
+                </div>
+                <button class="btn btn--ghost" type="submit">Save token</button>
+              </form>
+            </details>
           </div>
 
           <div class="card card--tan">
             <h3>What you need</h3>
             <ol class="steps" style="margin-top:.7rem">
               <li><span>An Instagram <strong>Creator</strong> or <strong>Business</strong> account.</span></li>
-              <li><span>Messaging permission on a Meta app — <code>instagram_business_manage_messages</code>.</span></li>
-              <li><span>A long-lived token pasted above. It lasts about 60 days; refresh it here any time.</span></li>
+              <li><span>A Meta app with the Instagram product added — your own account added as a tester.</span></li>
+              <li><span><code>META_APP_ID</code>, <code>META_APP_SECRET</code> and an https <code>PUBLIC_URL</code> on this server.</span></li>
             </ol>
-            <p class="small" style="margin-top:.9rem">Nothing is sent to anyone who hasn't messaged or commented on your account first.</p>
+            <p class="small" style="margin-top:.9rem">The redirect URI registered in Meta must be exactly <code>PUBLIC_URL/auth/callback</code>.</p>
           </div>
         </div>
       </div>
