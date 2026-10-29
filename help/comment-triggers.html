@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keywords and matching | Viraloop help</title>
+<meta name="description" content="How Viraloop matches comments to triggers, how to handle misspellings and emojis, and how to set a safe catch-all reply.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://itsrawdevvvvvv-arch.github.io/autodm/help/comment-triggers.html">
+<meta name="theme-color" content="#f4ead9">
+<meta name="color-scheme" content="light">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Viraloop">
+<meta property="og:title" content="Keywords and matching | Viraloop help">
+<meta property="og:description" content="How Viraloop matches comments to triggers, how to handle misspellings and emojis, and how to set a safe catch-all reply.">
+<meta property="og:url" content="https://itsrawdevvvvvv-arch.github.io/autodm/help/comment-triggers.html">
+<meta property="og:image" content="https://itsrawdevvvvvv-arch.github.io/autodm/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Viraloop — Instagram DM automation for creators">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Keywords and matching | Viraloop help">
+<meta name="twitter:description" content="How Viraloop matches comments to triggers, how to handle misspellings and emojis, and how to set a safe catch-all reply.">
+<meta name="twitter:image" content="https://itsrawdevvvvvv-arch.github.io/autodm/assets/img/og.png">
+<link rel="preload" href="../assets/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/space-grotesk-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/css/styles.css" as="style">
+<link rel="stylesheet" href="../assets/css/styles.css">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+<link rel="sitemap" type="application/xml" href="../sitemap.xml">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://itsrawdevvvvvv-arch.github.io/autodm/"},{"@type":"ListItem","position":2,"name":"Help","item":"https://itsrawdevvvvvv-arch.github.io/autodm/help/"},{"@type":"ListItem","position":3,"name":"Keywords and matching"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Keywords, matching, and what happens when nothing matches","description":"How Viraloop matches comments to triggers, how to handle misspellings and emojis, and how to set a safe catch-all reply.","author":{"@type":"Organization","name":"Viraloop"},"publisher":{"@type":"Organization","name":"Viraloop"},"dateModified":"2026-10-29","mainEntityOfPage":"https://itsrawdevvvvvv-arch.github.io/autodm/help/comment-triggers.html"}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header" data-open="false">
+  <div class="wrap header__inner">
+    <a class="brand" href="../index.html"><span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 18c4 0 4-12 8-12 2.2 0 3 2 3 4"/><path d="M16 14c0 2-.8 4-3 4-4 0-4-12-8-12"/></svg></span><span>Viraloop</span></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu"><span></span></button>
+    <nav class="nav" id="site-nav" aria-label="Primary">
+      <a href="../features.html">Features</a><a href="../pricing.html">Pricing</a><a href="../blog/index.html">Blog</a><a href="../help/index.html" aria-current="page">Help</a><a href="../about.html">About</a>
+    </nav>
+    <div class="header__cta">
+      <a class="btn btn--ghost btn--sm" href="../pricing.html#start">Join beta</a>
+    </div>
+  </div>
+</header>
+<main id="main">
+
+<article>
+  <header class="article-head">
+    <div class="wrap stack" style="max-width:44rem">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><ol><li><a href="../index.html">Home</a></li><li><a href="../help/index.html">Help</a></li><li aria-current="page">Keywords and matching</li></ol></nav>
+      <span class="eyebrow">Automation</span>
+      <h1 style="font-size:clamp(1.9rem,4.2vw,3rem)">Keywords, matching, and what happens when nothing matches</h1>
+      <p class="muted" style="font-size:.85rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase">5 min read · Updated 29 October 2026</p>
+    </div>
+  </header>
+  <div class="section">
+    <div class="wrap grid grid-2" style="align-items:start;gap:clamp(1.5rem,4vw,3rem)">
+      <div class="prose">
+<p>Matching is deliberately simple and predictable: if a comment contains one of your keywords, the automation fires. Here's how to make that behave well.</p>
+
+<h2 id="how">How matching works</h2>
+<ul>
+  <li>Matching is <strong>case-insensitive</strong>: <code>Price</code> and <code>price</code> are the same trigger.</li>
+  <li>Matching is <strong>substring-based</strong>: the keyword <code>link</code> also matches “link please” and “linkk”.</li>
+  <li>Each trigger can hold several keywords, and several triggers can watch the same post.</li>
+  <li>If two triggers match, the <strong>more specific</strong> one wins — the one with the longer matching keyword.</li>
+</ul>
+
+<h2 id="variations">Handle the variations</h2>
+<p>Add the forms you actually see: <em>price</em>, <em>pricing</em>, <em>cost</em>, <em>how much</em>, <em>kitna</em>. Emoji-only comments are best handled with a catch-all rather than trying to enumerate them.</p>
+
+<h2 id="catchall">Use a catch-all carefully</h2>
+<p>A catch-all replies to every comment that didn't match anything else. It's useful on launch posts and dangerous everywhere else — nothing is more obviously automated than a generic reply to “love this”. If you enable one, keep the message short and human, and review the log weekly.</p>
+
+<h2 id="nomatch">When nothing matches</h2>
+<p>The comment stays in your normal inbox, unanswered by the automation. That's intentional: guessing produces worse outcomes than silence. If the log shows the same unmatched comment repeatedly, that phrase belongs in your keyword list.</p>
+
+<h2 id="public">Public replies</h2>
+<p>Optionally, Viraloop can also post a short public reply under the comment (“sent to your DMs”). It's off by default because it changes the feel of your comment section — turn it on for launches, off for evergreen posts.</p>
+</div>
+      <aside class="stack">
+        <div class="card card--tan"><h3 style="font-size:1rem">On this page</h3><ul class="list-check mt-m" style="font-size:.9rem"><ul><li><a href="#how">How matching works</a></li><li><a href="#variations">Handle the variations</a></li><li><a href="#catchall">Use a catch-all carefully</a></li><li><a href="#nomatch">When nothing matches</a></li><li><a href="#public">Public replies</a></li></ul></ul></div>
+        <div class="card"><h3 style="font-size:1rem">Need a hand?</h3><p class="mt-m" style="font-size:.9rem">Email <a href="mailto:hello@viraloop.co">hello@viraloop.co</a> — one working day, usually less.</p></div>
+      </aside>
+    </div>
+  </div>
+</article>
+
+</main>
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="../index.html"><span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 18c4 0 4-12 8-12 2.2 0 3 2 3 4"/><path d="M16 14c0 2-.8 4-3 4-4 0-4-12-8-12"/></svg></span><span>Viraloop</span></a>
+        <p>Instagram DM automation for creators and small teams. Built on Meta's official API, policy-safe by design.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="../features.html">Features</a></li>
+          <li><a href="../pricing.html">Pricing</a></li>
+          <li><a href="../help/index.html">Help centre</a></li>
+          <li><a href="../pricing.html#start">Join the beta</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../blog/index.html">Blog</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="../terms.html">Terms of service</a></li>
+          <li><a href="../privacy.html">Privacy policy</a></li>
+          <li><a href="mailto:hello@viraloop.co">hello@viraloop.co</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 Viraloop. Operated by [Your Legal Entity], [City], India.</span>
+      <span>Last updated 29 October 2026</span>
+    </div>
+  </div>
+</footer>
+<script src="../assets/js/app.js" defer></script>
+</body>
+</html>

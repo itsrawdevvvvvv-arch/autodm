@@ -1,0 +1,6 @@
+# Viraloop
+User-agent: *
+Allow: /
+Disallow: /404.html
+
+Sitemap: https://itsrawdevvvvvv-arch.github.io/autodm/sitemap.xml
