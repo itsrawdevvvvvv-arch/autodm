@@ -342,7 +342,7 @@ PRICING = f"""
           </tbody>
         </table>
       </div>
-      <p class="small" style="margin-top:.9rem">Free hosting sleeps after inactivity, so replies can be delayed by a minute or two until the next request wakes it. A paid instance removes that. Either way, the software is free.</p>
+      <p class="small" style="margin-top:.9rem">A cron trigger runs the polling pass every minute, so there is no cold start and nothing to wake up. The free plan is genuinely enough — the paid plan only raises limits you will not reach.</p>
     </div>
   </div>
 </section>
