@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>AutoDM</title>
+<style>
+/* ============================================================
+   AutoDM — black & white, laid out like the reference
+   ============================================================ */
+
+:root{
+  --ink:#000;
+  --paper:#fff;
+  --soft:#f2f2f2;      /* tinted fills (the "cream" in the reference) */
+  --soft-2:#f7f7f7;
+  --line:#000;
+  --line-soft:#e2e2e2;
+  --muted:#7a7a7a;
+  --radius:24px;
+  --radius-sm:16px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:#fff;color:var(--ink);font-family:var(--font);
+  font-size:14.5px;line-height:1.45;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,p{margin:0}
+button{font-family:inherit;cursor:pointer}
+svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.app{
+  max-width:430px;margin:0 auto;min-height:100vh;background:#fff;
+  display:flex;flex-direction:column;position:relative;
+  border-left:1px solid #ededed;border-right:1px solid #ededed;
+}
+
+/* ===== profile header ===== */
+.hdr{
+  position:sticky;top:0;z-index:20;background:#fff;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:18px 20px 14px;
+}
+.hdr-left{display:flex;align-items:center;gap:12px;min-width:0}
+.avatar{
+  width:48px;height:48px;border-radius:50%;border:1.5px solid var(--line);
+  display:grid;place-items:center;font-weight:800;font-size:19px;flex:0 0 auto;
+  text-transform:uppercase;background:#fff;
+}
+.avatar.sm{width:38px;height:38px;font-size:15px}
+.hdr-name{display:flex;flex-direction:column;line-height:1.2;min-width:0}
+.hdr-name strong{font-size:15.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-name span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.badge{
+  display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;
+  border:1.5px solid var(--line);border-radius:999px;padding:6px 11px;
+  font-size:12px;font-weight:700;
+}
+.badge em{font-style:normal}
+.badge .star-ico{width:13px;height:13px;fill:currentColor;stroke:none}
+.badge.sm{padding:4px 10px;font-size:11px}
+
+/* ===== date strip ===== */
+.datestrip{
+  display:flex;justify-content:space-between;gap:4px;
+  padding:4px 20px 14px;
+}
+.day{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1}
+.day .dow{font-size:10px;font-weight:700;letter-spacing:.05em;color:var(--muted);text-transform:uppercase}
+.day .dnum{
+  width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  font-size:13.5px;font-weight:700;
+}
+.day.active .dnum{background:var(--ink);color:#fff}
+
+/* ===== content ===== */
+.content{flex:1;padding:0 20px 120px;display:flex;flex-direction:column;gap:16px}
+.view{display:none;flex-direction:column;gap:16px}
+.view.is-active{display:flex;animation:in .22s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ===== card ===== */
+.card{
+  border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:20px;background:#fff;
+}
+.card-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.card-title strong{font-size:16px;font-weight:800}
+.card-desc{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* ===== stars ===== */
+.stars{display:inline-flex;gap:3px}
+.stars svg{width:15px;height:15px;stroke:var(--ink);fill:none}
+.stars svg.on{fill:var(--ink)}
+
+/* ===== sub-card ===== */
+.subcard{
+  display:flex;align-items:center;gap:11px;
+  background:var(--soft);border-radius:var(--radius-sm);
+  padding:12px 14px;margin-top:14px;
+}
+.subcard-txt{display:flex;flex-direction:column;line-height:1.25;min-width:0;flex:1}
+.subcard-txt strong{font-size:13.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.subcard-txt span{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ===== countdown-style stat boxes ===== */
+.boxes{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px}
+.box{
+  flex:1;border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  padding:12px 6px;text-align:center;
+}
+.box .num{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.box .lbl{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.box-sep{font-size:20px;font-weight:800;color:var(--ink)}
+
+/* ===== buttons ===== */
+.btn-primary{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:15px;border-radius:999px;border:1.5px solid var(--line);
+  background:var(--ink);color:#fff;font-size:14px;font-weight:800;
+  margin-top:18px;transition:transform .08s ease;
+}
+.btn-primary:active{transform:scale(.98)}
+.btn-outline{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;padding:13px;border-radius:999px;border:1.5px solid var(--line);
+  background:#fff;color:var(--ink);font-size:13.5px;font-weight:700;margin-top:10px;
+}
+
+/* ===== guardrail ticks ===== */
+.ticks{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:11px}
+.ticks li{display:flex;gap:10px;align-items:flex-start;font-size:13px}
+.tick{
+  width:19px;height:19px;border-radius:50%;border:1.5px solid var(--line);
+  display:grid;place-items:center;font-size:11px;font-weight:800;flex:0 0 auto;margin-top:1px;
+}
+.tick.on{background:var(--ink);color:#fff}
+
+/* ===== auto-reply cards ===== */
+.stack{display:flex;flex-direction:column;gap:14px}
+.rule{
+  border:1.5px solid var(--line);border-radius:var(--radius);padding:18px;background:#fff;
+  display:flex;flex-direction:column;gap:11px;
+}
+.rule.off{opacity:.5}
+.rule-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.rule-name{font-size:15.5px;font-weight:800}
+.rule-type{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.kws{display:flex;flex-wrap:wrap;gap:6px}
+.kw{font-size:11.5px;border:1px solid var(--line-soft);border-radius:999px;padding:3px 10px;color:var(--muted)}
+.rule-reply{font-size:12.5px;color:#333;background:var(--soft);border-radius:var(--radius-sm);padding:11px 13px}
+.rule-actions{display:flex;gap:8px}
+.mini{flex:1;border:1.5px solid var(--line);border-radius:999px;background:#fff;padding:9px;font-size:12.5px;font-weight:700}
+.mini.danger:hover{background:var(--ink);color:#fff}
+
+/* ===== toggle ===== */
+.tgl{position:relative;width:46px;height:26px;flex:0 0 auto}
+.tgl input{opacity:0;width:0;height:0}
+.tgl span{position:absolute;inset:0;border:1.5px solid var(--line);border-radius:999px;transition:.18s}
+.tgl span::before{content:"";position:absolute;width:16px;height:16px;left:4px;top:4px;background:var(--ink);border-radius:50%;transition:.18s}
+.tgl input:checked + span{background:var(--ink)}
+.tgl input:checked + span::before{background:#fff;transform:translateX(20px)}
+
+/* ===== activity feed ===== */
+.feed{display:flex;flex-direction:column;margin-top:4px}
+.feed-item{display:flex;gap:11px;padding:12px 0;border-bottom:1px solid var(--line-soft);align-items:flex-start}
+.feed-item:last-child{border-bottom:0;padding-bottom:0}
+.feed-ico{width:32px;height:32px;border-radius:10px;border:1.5px solid var(--line);display:grid;place-items:center;flex:0 0 auto}
+.feed-ico svg{width:15px;height:15px}
+.feed-ico.msg{background:var(--ink);color:#fff}
+.feed-body{min-width:0;flex:1}
+.feed-body strong{display:block;font-size:13px}
+.feed-body span{display:block;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.feed-time{font-size:11px;color:var(--muted);flex:0 0 auto}
+.empty{padding:24px 6px;text-align:center;color:var(--muted);font-size:13px}
+
+/* ===== fields ===== */
+.field{display:block;margin-top:14px}
+.field > span{display:block;font-size:12px;font-weight:700;margin-bottom:6px}
+.field small{color:var(--muted);font-weight:400}
+.field input,.field select,.field textarea{
+  width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  font-family:inherit;font-size:13.5px;background:#fff;color:var(--ink);resize:vertical;
+}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;box-shadow:0 0 0 3px #eee}
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;font-size:13px;font-weight:600}
+.switch-row input{width:20px;height:20px;accent-color:#000}
+
+/* ===== segmented ===== */
+.seg{display:flex;gap:8px;margin-top:10px}
+.seg-btn{flex:1;border:1.5px solid var(--line);border-radius:999px;background:#fff;padding:10px;font-size:12.5px;font-weight:700;color:var(--ink)}
+.seg-btn.is-active{background:var(--ink);color:#fff}
+
+/* ===== bottom navigation ===== */
+.nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:min(430px,100%);z-index:30;
+  display:flex;align-items:center;gap:4px;justify-content:space-between;
+  background:#fff;border-top:1px solid #ededed;
+  padding:10px 12px calc(12px + env(safe-area-inset-bottom));
+}
+.tab{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:5px;
+  border:0;background:transparent;color:var(--muted);font-size:11px;font-weight:700;
+  padding:9px 4px;border-radius:999px;transition:.15s;white-space:nowrap;
+}
+.tab svg{width:17px;height:17px;flex:0 0 auto}
+.tab.is-active{background:var(--ink);color:#fff}
+.tab span{display:inline}
+
+/* ===== FAB ===== */
+.fab{
+  position:fixed;bottom:88px;left:50%;transform:translateX(calc(215px - 56px - 20px));
+  width:56px;height:56px;border-radius:50%;border:1.5px solid var(--line);
+  background:var(--ink);color:#fff;font-size:28px;font-weight:400;line-height:1;z-index:31;
+}
+@media (max-width:430px){ .fab{left:auto;right:20px;transform:none} }
+
+/* ===== bottom sheet ===== */
+.sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:none;align-items:flex-end;justify-content:center}
+.sheet-backdrop.open{display:flex;animation:in .18s ease}
+.sheet{
+  width:min(430px,100%);background:#fff;border-top-left-radius:28px;border-top-right-radius:28px;
+  border:1.5px solid var(--line);border-bottom:0;max-height:92vh;overflow:auto;
+  animation:up .26s cubic-bezier(.2,.9,.3,1.15);
+}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.sheet-handle{width:46px;height:5px;border-radius:999px;background:#d9d9d9;margin:12px auto 4px}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;padding:8px 22px 14px;border-bottom:1px solid var(--line-soft)}
+.sheet-head h3{font-size:17px;font-weight:800}
+.sheet-body{padding:16px 22px calc(22px + env(safe-area-inset-bottom))}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.x{border:0;background:transparent;font-size:26px;line-height:1;color:var(--muted);padding:0 4px}
+.sheet-actions{display:flex;gap:10px;margin-top:20px}
+.sheet-actions .btn-primary,.sheet-actions .btn-outline{margin-top:0}
+
+/* ===== toast ===== */
+.toast{
+  position:fixed;left:50%;bottom:104px;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:#fff;padding:12px 18px;border-radius:999px;
+  font-size:12.5px;font-weight:700;z-index:60;opacity:0;pointer-events:none;transition:.25s;
+  max-width:86%;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== Profile header ===== -->
+  <header class="hdr">
+    <div class="hdr-left">
+      <div class="avatar" id="avatar">?</div>
+      <div class="hdr-name">
+        <strong id="handleName">Not connected</strong>
+        <span id="tagline">Connect your account</span>
+      </div>
+    </div>
+    <span class="badge" id="badge">
+      <svg viewBox="0 0 24 24" class="star-ico"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6L12 16.8 6.6 19.6l1.2-6L3.3 9.4l6.1-.8z"/></svg>
+      <em id="badgeText">Off</em>
+    </span>
+  </header>
+
+  <!-- ===== Scrollable content ===== -->
+  <main class="content" id="content">
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section class="view is-active" id="view-dashboard">
+
+      <!-- day / date strip -->
+      <div class="datestrip" id="dateStrip"></div>
+
+      <!-- main card -->
+      <div class="card">
+        <div class="card-title">
+          <strong>Automation status</strong>
+          <span class="stars" id="stars"></span>
+        </div>
+        <p class="card-desc" id="cardDesc">Connect your Instagram Professional account to start replying automatically.</p>
+
+        <div class="subcard">
+          <div class="avatar sm" id="subAvatar">?</div>
+          <div class="subcard-txt">
+            <strong id="subName">No account</strong>
+            <span id="subTag">Not connected</span>
+          </div>
+          <span class="badge sm" id="subBadge">—</span>
+        </div>
+
+        <div class="boxes" id="statBoxes"></div>
+
+        <button class="btn-primary" id="connectBtn">Connect Instagram</button>
+      </div>
+
+      <!-- guardrails -->
+      <div class="card">
+        <div class="card-title">
+          <strong>Guardrails</strong>
+          <span class="badge sm" id="guardTag">Active</span>
+        </div>
+        <ul class="ticks" id="guardList"></ul>
+      </div>
+    </section>
+
+    <!-- ---------- AUTO-REPLIES ---------- -->
+    <section class="view" id="view-replies">
+      <div class="card">
+        <div class="card-title"><strong>Auto-Replies</strong><span class="badge sm" id="ruleCount">0</span></div>
+        <p class="card-desc">When someone messages you, or comments a keyword, AutoDM sends the reply you set here.</p>
+      </div>
+      <div id="ruleList" class="stack"></div>
+    </section>
+
+    <!-- ---------- ACTIVITY ---------- -->
+    <section class="view" id="view-activity">
+      <div class="card">
+        <div class="card-title"><strong>Activity</strong><span class="badge sm" id="actCount">0</span></div>
+        <div class="feed" id="activityFeed"></div>
+      </div>
+    </section>
+
+    <!-- ---------- SETTINGS ---------- -->
+    <section class="view" id="view-settings">
+      <div class="card">
+        <div class="card-title"><strong>Account</strong><span class="badge sm" id="modeBadge">Polling</span></div>
+        <label class="field"><span>Access token <small>(paste your long-lived token — no login redirect needed)</small></span><input type="password" id="manualToken" placeholder="IGQVJ..." /></label>
+        <button class="btn-primary" id="saveConnection">Save token</button>
+        <button class="btn-outline" id="refreshToken">Refresh token</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><strong>How messages arrive</strong></div>
+        <div class="seg" id="modeSeg">
+          <button type="button" class="seg-btn is-active" data-mode="poll">Polling</button>
+          <button type="button" class="seg-btn" data-mode="webhook">Webhook</button>
+        </div>
+        <p class="card-desc" id="modeDesc" style="margin-top:10px"></p>
+        <label class="field"><span>Check every (seconds)</span><input type="number" id="pollSeconds" min="10" max="600" /></label>
+        <label class="field"><span>Max sends per hour</span><input type="number" id="maxSends" min="1" max="1000" /></label>
+        <label class="field"><span>Reply window (hours)</span><input type="number" id="windowHours" min="1" max="24" /></label>
+        <label class="switch-row"><span>Tell people a bot is replying</span><input type="checkbox" id="disclose" /></label>
+        <button class="btn-primary" id="saveLimits">Save</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><strong>Advanced</strong></div>
+        <label class="field"><span>Server address <small>(only if the app is hosted separately)</small></span><input type="text" id="apiBase" placeholder="http://localhost:3000" /></label>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><strong>Rules data</strong></div>
+        <button class="btn-outline" id="exportRules">Export rules</button>
+        <label class="btn-outline" for="importRules">Import rules</label>
+        <input type="file" id="importRules" accept=".json" hidden />
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Bottom navigation ===== -->
+  <nav class="nav" id="nav">
+    <button class="tab is-active" data-view="dashboard">
+      <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg><span>Dashboard</span>
+    </button>
+    <button class="tab" data-view="replies">
+      <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.5 7.2L4 21l1.8-5.5A8 8 0 1121 12z"/></svg><span>Replies</span>
+    </button>
+    <button class="tab" data-view="activity">
+      <svg viewBox="0 0 24 24"><path d="M4 19h16M7 19V9m5 10V5m5 14v-7"/></svg><span>Activity</span>
+    </button>
+    <button class="tab" data-view="settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M4.2 4.2l2.1 2.1m11.4 11.4l2.1 2.1M2 12h3m14 0h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>Settings</span>
+    </button>
+  </nav>
+
+  <!-- Floating add button -->
+  <button class="fab" id="fab" hidden>+</button>
+</div>
+
+<!-- ===== Rule editor sheet ===== -->
+<div class="sheet-backdrop" id="sheetBackdrop">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head">
+      <h3 id="sheetTitle">New auto-reply</h3>
+      <button class="x" id="sheetClose">&times;</button>
+    </div>
+    <form id="ruleForm" class="sheet-body">
+      <input type="hidden" id="ruleId" />
+      <p class="eyebrow">What triggers it</p>
+      <div class="seg" id="triggerSeg">
+        <button type="button" class="seg-btn is-active" data-trigger="dm">Direct message</button>
+        <button type="button" class="seg-btn" data-trigger="comment">Comment</button>
+      </div>
+      <label class="field"><span>Name</span><input type="text" id="ruleName" placeholder="Price enquiry" required /></label>
+      <label class="field"><span>Keywords (comma separated)</span><input type="text" id="ruleKeywords" placeholder="price, cost, how much" required /></label>
+      <label class="field"><span>Match</span>
+        <select id="ruleMatch"><option value="contains">contains any keyword</option><option value="exact">matches exactly</option></select>
+      </label>
+      <label class="field" id="fldDm"><span>Reply message</span><textarea id="ruleReply" rows="3" placeholder="Sent back as a DM"></textarea></label>
+      <label class="field" id="fldPublic" hidden><span>Public comment reply (optional)</span><textarea id="rulePublic" rows="2" placeholder="Posted under the comment"></textarea></label>
+      <label class="field" id="fldDmComment" hidden><span>Private DM reply</span><textarea id="ruleDmReply" rows="3" placeholder="DM sent after the comment"></textarea></label>
+      <div class="sheet-actions">
+        <button type="button" class="btn-outline" id="sheetCancel">Cancel</button>
+        <button type="submit" class="btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   AutoDM — front end
+   The app auto-detects whether it is being served by the AutoDM
+   server. If it is, Connect works normally. If it is opened as a
+   plain file (or hosted statically with no server), it runs on demo
+   data and lets you point it at a server address.
+   ============================================================ */
+'use strict';
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const uid = () => Math.random().toString(36).slice(2, 9);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+/* ---- server detection ---- */
+let SERVER_MODE = false;                                       // true when served by the AutoDM server
+let SERVER = (localStorage.getItem('autodm.server') || '').replace(/\/$/, '');  // manually set address (standalone)
+const base = () => (SERVER_MODE ? '' : SERVER);
+const apiActive = () => SERVER_MODE || !!SERVER;
+
+async function detectServer() {
+  try {
+    const r = await fetch('/api/status', { headers: { Accept: 'application/json' } });
+    const ct = r.headers.get('content-type') || '';
+    if (r.ok && ct.includes('application/json')) SERVER_MODE = true;
+  } catch { /* not served by the server — standalone */ }
+}
+
+const ICONS = {
+  message: '<svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.5 7.2L4 21l1.8-5.5A8 8 0 1121 12z"/></svg>',
+  comment: '<svg viewBox="0 0 24 24"><path d="M4 5h16v10H8l-4 4z"/></svg>',
+  system: '<svg viewBox="0 0 24 24"><path d="M12 8v5m0 3h.01M12 3l9 16H3z"/></svg>',
+};
+const STAR = '<svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6L12 16.8 6.6 19.6l1.2-6L3.3 9.4l6.1-.8z"/></svg>';
+
+/* ============ data layer ============ */
+const LS = 'autodm.preview.v1';
+function seedPreview() {
+  return {
+    connected: false, metaConfigured: false, handle: '', tokenSet: false,
+    maxSends: 200, windowHours: 24, disclose: true, sendsThisHour: 0,
+    rules: [
+      { id: uid(), type: 'dm', name: 'Price enquiry', enabled: true, keywords: ['price', 'cost', 'how much'], match: 'contains', reply: 'Thanks for messaging! Our pricing starts at Rs.499/month — full details coming right up.' },
+      { id: uid(), type: 'dm', name: 'Greeting', enabled: true, keywords: ['hi', 'hello', 'hey'], match: 'exact', reply: 'Hey! Thanks for reaching out — what can I help you with?' },
+      { id: uid(), type: 'comment', name: 'Link request', enabled: true, keywords: ['link', 'send'], match: 'contains', publicReply: 'Sent to your DMs!', dmReply: 'Here is the link you asked for.' },
+    ],
+    activity: [
+      { id: uid(), type: 'message', title: 'DM replied', detail: '@riya sent "price?" → matched Price enquiry', ts: Date.now() - 240000 },
+      { id: uid(), type: 'comment', title: 'Comment handled', detail: '@arjun commented "link" → public reply + DM', ts: Date.now() - 2400000 },
+      { id: uid(), type: 'system', title: 'Guardrail held', detail: 'Skipped a reply outside the 24-hour window', ts: Date.now() - 7200000 },
+    ],
+  };
+}
+
+async function api(path, opts) {
+  const res = await fetch(base() + path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts));
+  const ct = res.headers.get('content-type') || '';
+  if (!res.ok || !ct.includes('application/json')) throw new Error('backend-unavailable');
+  return res.status === 204 ? null : res.json();
+}
+
+const store = {
+  _p: null,
+  preview() { if (!this._p) this._p = JSON.parse(localStorage.getItem(LS) || 'null') || seedPreview(); return this._p; },
+  savePreview() { localStorage.setItem(LS, JSON.stringify(this._p)); },
+  async status() { return apiActive() ? api('/api/status') : this.preview(); },
+  async rules() { return apiActive() ? api('/api/rules') : this.preview().rules; },
+  async activity() { return apiActive() ? api('/api/activity') : this.preview().activity; },
+  async settings() { return apiActive() ? api('/api/settings') : this.preview(); },
+  async saveRule(rule) {
+    if (apiActive()) {
+      const isNew = !rule.id;
+      return api(isNew ? '/api/rules' : '/api/rules/' + rule.id, { method: isNew ? 'POST' : 'PUT', body: JSON.stringify(rule) });
+    }
+    const p = this.preview();
+    if (rule.id) { const i = p.rules.findIndex(x => x.id === rule.id); p.rules[i] = rule; }
+    else { rule.id = uid(); p.rules.push(rule); }
+    this.savePreview(); return rule;
+  },
+  async deleteRule(id) {
+    if (apiActive()) return api('/api/rules/' + id, { method: 'DELETE' });
+    const p = this.preview(); p.rules = p.rules.filter(r => r.id !== id); this.savePreview();
+  },
+  async saveSettings(s) {
+    if (apiActive()) return api('/api/settings', { method: 'POST', body: JSON.stringify(s) });
+    Object.assign(this.preview(), s); this.savePreview();
+  },
+  async setToken(token) {
+    if (apiActive()) return api('/api/token', { method: 'POST', body: JSON.stringify({ token }) });
+    this.preview().tokenSet = !!token; this.savePreview();
+  },
+};
+
+/* ============ state ============ */
+let STATE = { status: {}, rules: [], activity: [], settings: {} };
+
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2600);
+}
+function timeAgo(ts) {
+  const m = Math.floor((Date.now() - ts) / 60000);
+  if (m < 1) return 'now'; if (m < 60) return m + 'm'; const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h'; return Math.floor(h / 24) + 'd';
+}
+
+/* ============ renderers ============ */
+function guardrails() {
+  return [
+    ['No password is ever stored', true],
+    ['Replies only after someone contacts you', true],
+    [`Reply window limited to ${STATE.settings.windowHours || 24} hours`, true],
+    [`Sending capped at ${STATE.settings.maxSends || 200}/hour`, true],
+    ['Automation disclosed to users', !!STATE.settings.disclose],
+  ];
+}
+
+function renderHeader() {
+  const s = STATE.status;
+  const handle = s.handle ? String(s.handle).replace(/^@/, '') : '';
+  $('#handleName').textContent = s.connected && handle ? '@' + handle : 'Not connected';
+  $('#avatar').textContent = s.connected && handle ? handle.charAt(0) : '?';
+  $('#tagline').textContent = s.connected ? 'Auto-replies are on'
+    : (apiActive() ? 'Connect your account' : 'Demo data');
+  $('#badgeText').textContent = s.connected ? 'Connected' : 'Off';
+}
+
+function renderDateStrip() {
+  const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const now = new Date();
+  const start = new Date(now); start.setDate(now.getDate() - now.getDay());
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(start); d.setDate(start.getDate() + i);
+    const active = d.toDateString() === now.toDateString();
+    html += `<div class="day ${active ? 'active' : ''}"><span class="dow">${names[d.getDay()]}</span><span class="dnum">${d.getDate()}</span></div>`;
+  }
+  $('#dateStrip').innerHTML = html;
+}
+
+function renderDashboard() {
+  const s = STATE.status;
+  const handle = s.handle ? String(s.handle).replace(/^@/, '') : '';
+  const g = guardrails();
+  const onCount = g.filter(x => x[1]).length;
+
+  $('#stars').innerHTML = Array.from({ length: 5 }, (_, i) => STAR.replace('<svg', `<svg class="${i < onCount ? 'on' : ''}"`)).join('');
+  $('#cardDesc').textContent = s.connected
+    ? 'Your account is linked. AutoDM replies to people who message or comment — never to cold contacts.'
+    : (apiActive()
+        ? 'Connect your Instagram Professional account to start replying automatically.'
+        : 'Showing sample data. Open Settings to point AutoDM at your server, then Connect.');
+
+  $('#subAvatar').textContent = s.connected && handle ? handle.charAt(0) : '?';
+  $('#subName').textContent = s.connected && handle ? '@' + handle : 'No account';
+  $('#subTag').textContent = s.connected ? 'Instagram Professional' : (apiActive() ? 'Not connected' : 'Demo data');
+  $('#subBadge').textContent = s.connected ? 'Live' : 'Off';
+
+  const dms = STATE.activity.filter(a => a.type === 'message').length;
+  const cm = STATE.activity.filter(a => a.type === 'comment').length;
+  const rules = STATE.rules.filter(r => r.enabled).length;
+  $('#statBoxes').innerHTML = [
+    [dms, 'DMs'], [cm, 'Comments'], [rules, 'Rules'],
+  ].map(([n, l], i) => `<div class="box"><div class="num">${n}</div><div class="lbl">${l}</div></div>${i < 2 ? '<span class="box-sep">:</span>' : ''}`).join('');
+
+  $('#connectBtn').textContent = s.connected ? 'Reconnect' : 'Connect Instagram';
+  $('#guardTag').textContent = onCount === 5 ? 'All active' : onCount + '/5';
+  $('#guardList').innerHTML = g.map(([t, on]) => `<li><span class="tick ${on ? 'on' : ''}">${on ? '✓' : ''}</span><span>${esc(t)}</span></li>`).join('');
+}
+
+function renderRules() {
+  $('#ruleCount').textContent = STATE.rules.length;
+  if (!STATE.rules.length) { $('#ruleList').innerHTML = '<div class="card"><div class="empty">No auto-replies yet. Tap + to add one.</div></div>'; return; }
+  $('#ruleList').innerHTML = STATE.rules.map(r => `
+    <div class="rule ${r.enabled ? '' : 'off'}">
+      <div class="rule-top">
+        <div><div class="rule-type">${r.type === 'dm' ? 'Direct message' : 'Comment'}</div><div class="rule-name">${esc(r.name)}</div></div>
+        <label class="tgl"><input type="checkbox" data-toggle="${r.id}" ${r.enabled ? 'checked' : ''}/><span></span></label>
+      </div>
+      <div class="kws">${r.keywords.map(k => `<span class="kw">${esc(k)}</span>`).join('')}</div>
+      <div class="rule-reply">${esc(r.type === 'dm' ? r.reply : (r.dmReply || r.publicReply || ''))}</div>
+      <div class="rule-actions"><button class="mini" data-edit="${r.id}">Edit</button><button class="mini danger" data-del="${r.id}">Delete</button></div>
+    </div>`).join('');
+}
+
+function renderActivity() {
+  $('#actCount').textContent = STATE.activity.length;
+  if (!STATE.activity.length) { $('#activityFeed').innerHTML = '<div class="empty">No activity yet.</div>'; return; }
+  $('#activityFeed').innerHTML = STATE.activity.slice().sort((a, b) => b.ts - a.ts).map(a => `
+    <div class="feed-item">
+      <div class="feed-ico ${a.type === 'message' ? 'msg' : ''}">${ICONS[a.type] || ICONS.system}</div>
+      <div class="feed-body"><strong>${esc(a.title)}</strong><span>${esc(a.detail)}</span></div>
+      <div class="feed-time">${timeAgo(a.ts)}</div>
+    </div>`).join('');
+}
+
+let receiveMode = 'poll';
+function setMode(m) {
+  receiveMode = m;
+  $$('#modeSeg .seg-btn').forEach(b => b.classList.toggle('is-active', b.dataset.mode === m));
+  $('#modeDesc').textContent = m === 'poll'
+    ? 'AutoDM checks for new messages on its own — no public URL or tunnel needed.'
+    : "Meta pushes messages to this server's /webhook. Needs a public HTTPS URL.";
+  $('#modeBadge').textContent = m === 'poll' ? 'Polling' : 'Webhook';
+}
+function renderSettings() {
+  $('#apiBase').value = SERVER_MODE ? location.origin : SERVER;
+  $('#apiBase').disabled = SERVER_MODE;
+  setMode(STATE.settings.receiveMode || 'poll');
+  $('#pollSeconds').value = STATE.settings.pollSeconds || 30;
+  $('#maxSends').value = STATE.settings.maxSends || 200;
+  $('#windowHours').value = STATE.settings.windowHours || 24;
+  $('#disclose').checked = !!STATE.settings.disclose;
+}
+
+function renderAll() { renderHeader(); renderDateStrip(); renderDashboard(); renderRules(); renderActivity(); renderSettings(); }
+
+/* ============ navigation ============ */
+function go(view) {
+  $$('.tab').forEach(t => t.classList.toggle('is-active', t.dataset.view === view));
+  $$('.view').forEach(v => v.classList.toggle('is-active', v.id === 'view-' + view));
+  $('#fab').hidden = view !== 'replies';
+  window.scrollTo({ top: 0 });
+}
+
+/* ============ rule sheet ============ */
+let trigger = 'dm';
+function setTrigger(t) {
+  trigger = t;
+  $$('#triggerSeg .seg-btn').forEach(b => b.classList.toggle('is-active', b.dataset.trigger === t));
+  $('#fldDm').hidden = t !== 'dm';
+  $('#fldPublic').hidden = t === 'dm';
+  $('#fldDmComment').hidden = t === 'dm';
+}
+function openSheet(rule) {
+  $('#ruleId').value = rule ? rule.id : '';
+  $('#sheetTitle').textContent = rule ? 'Edit auto-reply' : 'New auto-reply';
+  setTrigger(rule ? rule.type : 'dm');
+  $('#ruleName').value = rule ? rule.name : '';
+  $('#ruleKeywords').value = rule ? rule.keywords.join(', ') : '';
+  $('#ruleMatch').value = rule ? rule.match : 'contains';
+  $('#ruleReply').value = rule && rule.reply ? rule.reply : '';
+  $('#rulePublic').value = rule && rule.publicReply ? rule.publicReply : '';
+  $('#ruleDmReply').value = rule && rule.dmReply ? rule.dmReply : '';
+  $('#sheetBackdrop').classList.add('open');
+}
+function closeSheet() { $('#sheetBackdrop').classList.remove('open'); }
+
+async function submitRule(e) {
+  e.preventDefault();
+  const id = $('#ruleId').value || undefined;
+  const keywords = $('#ruleKeywords').value.split(',').map(k => k.trim()).filter(Boolean);
+  if (!keywords.length) return toast('Add at least one keyword');
+  const rule = { id, type: trigger, name: $('#ruleName').value.trim() || 'Untitled', keywords, match: $('#ruleMatch').value, enabled: true };
+  if (trigger === 'dm') { rule.reply = $('#ruleReply').value.trim(); if (!rule.reply) return toast('Add a reply message'); }
+  else { rule.publicReply = $('#rulePublic').value.trim(); rule.dmReply = $('#ruleDmReply').value.trim(); if (!rule.dmReply && !rule.publicReply) return toast('Add a reply'); }
+  if (id) { const cur = STATE.rules.find(r => r.id === id); rule.enabled = cur ? cur.enabled : true; }
+  await store.saveRule(rule); await refresh(); closeSheet();
+  toast(id ? 'Auto-reply updated' : 'Auto-reply created');
+}
+
+/* ============ refresh ============ */
+function useDemo() {
+  const p = store.preview();
+  STATE.status = p; STATE.rules = p.rules; STATE.activity = p.activity; STATE.settings = p;
+  renderAll();
+}
+async function refresh() {
+  if (!apiActive()) { useDemo(); return; }
+  try {
+    const [status, rules, activity, settings] = await Promise.all([store.status(), store.rules(), store.activity(), store.settings()]);
+    STATE.status = status || {}; STATE.rules = rules || []; STATE.activity = activity || []; STATE.settings = settings || {};
+    renderAll();
+  } catch (err) {
+    useDemo();
+    console.error(err);
+  }
+}
+
+/* ============ events ============ */
+document.addEventListener('DOMContentLoaded', () => {
+  $('#nav').addEventListener('click', e => { const t = e.target.closest('.tab'); if (t) go(t.dataset.view); });
+
+  $('#connectBtn').addEventListener('click', async () => {
+    if (!apiActive()) { toast('Add your server address in Settings'); go('settings'); return; }
+    if (SERVER_MODE) {
+      try {
+        const s = await store.status();
+        if (!s.metaConfigured) return toast('Add META_APP_ID and META_APP_SECRET to .env');
+        window.location.href = '/auth/instagram';
+      } catch { toast('Server not reachable'); }
+      return;
+    }
+    window.location.href = SERVER + '/auth/instagram';
+  });
+
+  $('#fab').addEventListener('click', () => openSheet(null));
+  $('#sheetClose').addEventListener('click', closeSheet);
+  $('#sheetCancel').addEventListener('click', closeSheet);
+  $('#sheetBackdrop').addEventListener('click', e => { if (e.target.id === 'sheetBackdrop') closeSheet(); });
+  $('#triggerSeg').addEventListener('click', e => { const b = e.target.closest('.seg-btn'); if (b) setTrigger(b.dataset.trigger); });
+  $('#ruleForm').addEventListener('submit', submitRule);
+
+  $('#ruleList').addEventListener('click', async e => {
+    const ed = e.target.closest('[data-edit]'); const dl = e.target.closest('[data-del]');
+    if (ed) openSheet(STATE.rules.find(r => r.id === ed.dataset.edit));
+    if (dl) { if (confirm('Delete this auto-reply?')) { await store.deleteRule(dl.dataset.del); await refresh(); toast('Deleted'); } }
+  });
+  $('#ruleList').addEventListener('change', async e => {
+    const t = e.target.closest('[data-toggle]'); if (!t) return;
+    const r = STATE.rules.find(x => x.id === t.dataset.toggle); if (!r) return;
+    r.enabled = t.checked; await store.saveRule(r); await refresh();
+  });
+
+  $('#saveConnection').addEventListener('click', async () => {
+    if (!SERVER_MODE) { SERVER = $('#apiBase').value.trim().replace(/\/$/, ''); localStorage.setItem('autodm.server', SERVER); }
+    const token = $('#manualToken').value.trim();
+    if (!token) return toast('Paste your access token');
+    await store.setToken(token);
+    $('#manualToken').value = '';
+    await refresh(); toast('Token saved');
+  });
+  $('#refreshToken').addEventListener('click', async () => {
+    if (!apiActive()) return toast('Needs the server running');
+    try { await api('/api/refresh-token', { method: 'POST' }); await refresh(); toast('Token refreshed'); }
+    catch { toast('Could not refresh token'); }
+  });
+  $('#modeSeg').addEventListener('click', e => { const b = e.target.closest('.seg-btn'); if (b) setMode(b.dataset.mode); });
+  $('#saveLimits').addEventListener('click', async () => {
+    await store.saveSettings({
+      maxSends: Math.max(1, parseInt($('#maxSends').value, 10) || 200),
+      windowHours: Math.min(24, Math.max(1, parseInt($('#windowHours').value, 10) || 24)),
+      disclose: $('#disclose').checked,
+      receiveMode,
+      pollSeconds: Math.max(10, parseInt($('#pollSeconds').value, 10) || 30),
+    });
+    await refresh(); toast('Saved');
+  });
+  $('#exportRules').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(STATE.rules, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'autodm-rules.json'; a.click(); URL.revokeObjectURL(a.href);
+  });
+  $('#importRules').addEventListener('change', async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      const data = JSON.parse(await f.text());
+      if (!Array.isArray(data)) throw new Error();
+      for (const r of data) { delete r.id; await store.saveRule(r); }
+      await refresh(); toast('Imported ' + data.length + ' rules');
+    } catch { toast('Invalid file'); }
+    e.target.value = '';
+  });
+
+  detectServer().then(refresh);
+});
+
+</script>
+</body>
+</html>
