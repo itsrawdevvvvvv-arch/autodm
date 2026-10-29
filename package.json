@@ -1,11 +1,17 @@
 {
-  "name": "autodm",
-  "version": "1.0.0",
-  "description": "AutoDM — Instagram auto-reply console on Meta's official Instagram Messaging API",
+  "name": "viraloop",
+  "version": "1.1.0",
+  "description": "Viraloop \u2014 free, single-account Instagram DM automation. Cloudflare Workers (primary) and Node (local).",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
-    "dev": "node --watch server/server.js"
+    "dev": "node --watch server/server.js",
+    "test": "node test/worker_test.mjs && python3 test/sql_check.py",
+    "cf:dev": "wrangler dev",
+    "cf:deploy": "wrangler deploy",
+    "cf:db:create": "wrangler d1 create viraloop",
+    "cf:db:init": "wrangler d1 execute viraloop --remote --file=migrations/0001_init.sql",
+    "site:build": "cd docs/src && python3 build.py && python3 qa.py"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

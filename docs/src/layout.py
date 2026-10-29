@@ -13,7 +13,7 @@ UPDATED = "29 October 2026"
 # the site then shows the one-click deploy button instead of a dead link.
 APP_URL = ""
 REPO_URL = "https://github.com/itsrawdevvvvvv-arch/autodm"
-DEPLOY_URL = "https://render.com/deploy?repo=" + REPO_URL
+DEPLOY_URL = "https://deploy.workers.cloudflare.com/?url=" + REPO_URL
 FREE_LINE = "Free forever, one account, no card"
 
 
