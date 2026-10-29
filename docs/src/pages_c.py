@@ -141,7 +141,7 @@ HELP = [
          body="""
 <h2 id="cost">What it costs</h2>
 <p>Nothing. There is no subscription, no per-message charge and no paid tier. Viraloop is a single-account tool you run yourself, so there is no bill for us to send you.</p>
-<p>The one optional cost is hosting. The free tier of Render runs it fine; a free instance sleeps when idle, so a reply can be delayed by a minute or two until it wakes. A paid always-on instance removes that delay, but the software is identical.</p>
+<p>The one optional cost is hosting, and on Cloudflare's free Workers plan that is ₹0 with no card. Replies land within a minute, because a cron trigger runs the polling pass every minute.</p>
 
 <h2 id="account">One account per deployment</h2>
 <p>Each deployment connects to one Instagram account. That keeps the token, the stored data and the blast radius small. A second account means a second deployment — which on a free host is a second free service.</p>
@@ -295,7 +295,7 @@ def connect_cta():
         <h3 style="margin-top:.8rem">This site isn't linked to a running app yet</h3>
         <p class="mt-m">The Connect button needs a deployed instance of the app to receive Instagram's callback. Two minutes of setup, then this page becomes a one-click connect.</p>
         <ol class="list-check mt-m">
-          <li>{icon('check')}<span><strong>Deploy the app</strong> — one click on Render, or <code>npm start</code> locally.</span></li>
+          <li>{icon('check')}<span><strong>Deploy the app</strong> — Cloudflare Workers free plan (four commands), or <code>npm start</code> locally.</span></li>
           <li>{icon('check')}<span><strong>Add your Meta app ID and secret</strong> to that server's environment.</span></li>
           <li>{icon('check')}<span><strong>Register the redirect URI</strong> <code>https://your-app/auth/callback</code> in the Meta dashboard.</span></li>
           <li>{icon('check')}<span><strong>Set <code>APP_URL</code></strong> in the site generator so this button points at your app.</span></li>

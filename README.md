@@ -10,11 +10,15 @@ No subscription, no per-message pricing, no paid tier. You deploy it, you own it
 
 | Path | What it is |
 |---|---|
-| `server/` | The app: Express API, polling engine, reply engine, JSON store |
-| `public/` | The dashboard UI (neobrutalist, vanilla JS, no build step) |
+| `worker.js` | **Cloudflare Workers build** — the free, always-on deployment |
+| `wrangler.toml` | Worker config: assets, D1 binding, one-minute cron |
+| `migrations/` | D1 schema |
+| `server/` | The same app as a Node/Express server, for running locally |
+| `public/` | The dashboard UI (vanilla JS, no build step) — shared by both |
 | `docs/` | The marketing site, published by GitHub Pages |
 | `docs/src/` | Python generator for the marketing site (`python3 build.py`) |
-| `render.yaml` | One-click Render blueprint |
+| `test/` | 51-check Worker test suite + SQL validation |
+| `render.yaml` | Optional Render blueprint (needs a card on their free tier) |
 
 The marketing site is live at **https://itsrawdevvvvvv-arch.github.io/autodm/**.
 The dashboard runs wherever you deploy `server/`.
@@ -35,23 +39,49 @@ Open **http://localhost:3000** and paste an access token.
 
 Node 18+. No database, no build step, two dependencies (`express`, `dotenv`).
 
-## Deploy to Render (free)
+## Deploy to Cloudflare Workers (free, no card)
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/itsrawdevvvvvv-arch/autodm)
+Cloudflare's free plan includes Workers, D1 and cron triggers — enough to run
+this indefinitely without a payment method.
 
-The blueprint creates the service and generates `APP_KEY` and
-`WEBHOOK_VERIFY_TOKEN`. After the first deploy:
+```bash
+git clone https://github.com/itsrawdevvvvvv-arch/autodm.git
+cd autodm && npm install
+npx wrangler login
+npx wrangler d1 create viraloop        # copy the database_id it prints
+npx wrangler d1 execute viraloop --remote --file=migrations/0001_init.sql
+npx wrangler deploy
+```
 
-1. Open the service → **Environment** → copy the `APP_KEY` value.
-2. Open your app URL → **Settings → Access key** → paste it. The dashboard now
-   accepts requests from your browser only.
-3. Go to **Account** and paste an Instagram access token.
+Paste the printed `database_id` into `wrangler.toml`, then set the secrets:
 
-Free instances sleep after inactivity, so a reply can be delayed by a minute or
-two until the next request wakes the service. Any always-on instance removes
-that delay; the software is the same.
+```bash
+npx wrangler secret put APP_KEY           # any random string; locks the dashboard
+npx wrangler secret put PUBLIC_URL        # https://viraloop.<you>.workers.dev
+npx wrangler secret put META_APP_ID       # for the Connect button
+npx wrangler secret put META_APP_SECRET
+```
 
----
+Redeploy after adding secrets (`npx wrangler deploy`), open your
+`*.workers.dev` URL, and press **Connect Instagram**.
+
+How it maps onto the free plan:
+
+| Piece | Free limit | What Viraloop uses |
+|---|---|---|
+| Cron trigger | every minute | one polling pass per minute |
+| Workers requests | 100k/day | ~1,440 cron runs + your dashboard use |
+| D1 rows written | 100k/day | a handful per poll |
+| Static assets | unlimited | the dashboard in `public/` |
+
+There is no `setInterval` and no filesystem on Workers, so the Worker uses
+`scheduled()` for polling and D1 instead of `data/*.json`. The Node server in
+`server/` still works if you prefer running it on your own machine.
+
+### Optional: Render
+
+`render.yaml` is still here, but Render's free instance type now requires a card
+on file, which is why Cloudflare is the documented path.
 
 ## Connecting your Instagram account
 
@@ -159,6 +189,18 @@ Send `X-Api-Key: <APP_KEY>` on every `/api` call when `APP_KEY` is set.
 `poller`. Git-ignored. Delete the folder to wipe everything.
 
 ---
+
+## Tests
+
+```bash
+npm test          # 51 Worker checks + SQL validation
+```
+
+`test/worker_test.mjs` runs `worker.js` against a D1 shim and a mocked Meta API:
+routing, the access key, OAuth redirect and state guards, rule CRUD, the dry-run
+tester, the polling engine (DM + comment paths, de-duplication, the hourly cap)
+and static asset serving. `test/sql_check.py` validates every SQL statement
+against a real SQLite engine.
 
 ## The marketing site
 

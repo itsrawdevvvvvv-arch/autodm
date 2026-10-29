@@ -178,7 +178,7 @@ HOME = f"""
       <div class="card card--ink">
         <p class="small" style="opacity:.75">Cost</p>
         <p class="plan__price" style="color:var(--paper)">₹0 <small>/ forever</small></p>
-        <p style="margin-top:.8rem;opacity:.9">No subscription, no per-message charge, no upsell. The only thing you might pay for is hosting — and the free tier of Render is enough to run this.</p>
+        <p style="margin-top:.8rem;opacity:.9">No subscription, no per-message charge, no upsell. It runs on Cloudflare's free Workers plan, which asks for no card at all.</p>
         <div class="btn-row" style="margin-top:1.2rem">
           <a class="btn" href="{DEPLOY_URL}" rel="noopener">Deploy it free</a>
           <a class="btn btn--ghost" href="pricing.html">How it works</a>
@@ -198,7 +198,7 @@ HOME = f"""
   ("What happens to my data?",
    "We store your account details, automation settings and message logs so the product can work. We don't sell data, we don't run advertising pixels on this site, and you can delete everything by disconnecting the account or emailing us. The <a href=\"privacy.html\">privacy policy</a> lists exactly what's processed."),
   ("Is it really free?",
-   "Yes — no plan, no card, no trial. Viraloop is software you run yourself for a single Instagram account. The only optional cost is hosting, and the free tier of Render is enough."),
+   "Yes — no plan, no card, no trial. Viraloop is software you run yourself for a single Instagram account, and the Cloudflare Workers free plan costs nothing."),
   ("What's the catch?",
    "There isn't one. It runs on your own server, so there is no bill to send you. If you later want it hosted for you with more accounts, that would be a separate conversation — nothing on this page changes."),
 ])}
@@ -337,8 +337,8 @@ PRICING = f"""
           <tbody>
             <tr><td>Viraloop</td><td class="yes">₹0</td></tr>
             <tr><td>Meta Instagram API</td><td class="yes">₹0</td></tr>
-            <tr><td>Hosting (Render free tier)</td><td class="yes">₹0</td></tr>
-            <tr><td>Hosting (always-on instance)</td><td>~$7/month, optional</td></tr>
+            <tr><td>Cloudflare Workers (free plan)</td><td class="yes">₹0</td></tr>
+            <tr><td>Cloudflare paid plan</td><td>optional, not needed</td></tr>
           </tbody>
         </table>
       </div>
@@ -358,7 +358,7 @@ PRICING = f"""
         <div class="step__num">1</div>
         <div>
           <h3>Deploy</h3>
-          <p>One click on Render, or run <code>npm install &amp;&amp; npm start</code> on your own machine. Nothing else to configure to get the dashboard up.</p>
+          <p>Four commands on the free Cloudflare Workers plan — or <code>npm start</code> on your own machine. No card, no build step.</p>
         </div>
       </div>
       <div class="step">
@@ -377,14 +377,16 @@ PRICING = f"""
       </div>
     </div>
     <div class="card mt-l" style="max-width:44rem;margin-inline:auto">
-      <h3>Run it locally instead</h3>
-      <p class="small muted" style="margin:.4rem 0 .7rem">Needs Node 18 or newer. No database, no build step.</p>
+      <h3>Deploy on Cloudflare — free, no card</h3>
+      <p class="small muted" style="margin:.4rem 0 .7rem">Needs Node 18+ and a free Cloudflare account.</p>
       <div class="prose"><pre style="overflow-x:auto"><code>git clone https://github.com/itsrawdevvvvvv-arch/autodm.git
-cd autodm
-npm install
-cp .env.example .env
-npm start</code></pre></div>
-      <p class="small" style="margin-top:.7rem">Then open <code>http://localhost:3000</code> and paste your token. Keep the terminal open while you want automations to run.</p>
+cd autodm &amp;&amp; npm install
+npx wrangler login
+npx wrangler d1 create viraloop
+npx wrangler d1 execute viraloop --remote --file=migrations/0001_init.sql
+npx wrangler deploy</code></pre></div>
+      <p class="small" style="margin-top:.7rem">Paste the D1 id it prints into <code>wrangler.toml</code> before deploying, then add the secrets with <code>npx wrangler secret put META_APP_ID</code> (and <code>META_APP_SECRET</code>, <code>PUBLIC_URL</code>, <code>APP_KEY</code>).</p>
+      <p class="small muted" style="margin-top:.5rem">Prefer your own machine? <code>npm install &amp;&amp; npm start</code> runs the same app at <code>localhost:3000</code> using a JSON file store.</p>
     </div>
   </div>
 </section>
@@ -393,7 +395,7 @@ npm start</code></pre></div>
   ("Is it really free, or free for now?",
    "Free, with nothing to upgrade to. Viraloop is a single-account tool that runs on your own server, so there is no subscription to bill. There is no paid tier on this site and no waitlist."),
   ("What's the catch?",
-   "The honest trade-off: you host it yourself. That means a Render account (free tier is fine) or a machine that stays on, and a Meta app with messaging permission. In exchange you get no per-message pricing and no vendor holding your data."),
+   "The honest trade-off: you host it yourself. That means a free Cloudflare account (Workers + D1, no card) or a machine that stays on, and a Meta app with messaging permission. In exchange you get no per-message pricing and no vendor holding your data."),
   ("Do I need to apply for Meta app review?",
    "Not to get started. A long-lived token from your own Meta app is enough for your own account, which is the intended use here. Public, multi-user distribution would need app review — that's out of scope."),
   ("Can I use it for more than one Instagram account?",

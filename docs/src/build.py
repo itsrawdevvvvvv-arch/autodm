@@ -229,9 +229,9 @@ overwrites it.
    the `data-mailto` attribute when you have one.
 5. **Instagram handle.** `INSTAGRAM` in `src/layout.py`.
 6. **App URL.** `APP_URL` in `src/layout.py` is empty until you deploy the
-   dashboard. Set it to your Render URL (e.g. `https://viraloop.onrender.com`)
+   dashboard. Set it to your Worker URL (e.g. `https://viraloop.you.workers.dev`)
    and the site links straight into the app. `DEPLOY_URL` is the one-click
-   Render blueprint for the repo.
+   Cloudflare deploy button for the repo.
 
 ## Design system
 

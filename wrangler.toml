@@ -1,0 +1,22 @@
+# Viraloop on Cloudflare Workers (free plan: no card required)
+name = "viraloop"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+# The dashboard in public/ is served as static assets by the same Worker.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "viraloop"
+# Run `wrangler d1 create viraloop` and paste the id it prints.
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+# Polling: every minute. Cron triggers are included on the free plan.
+[triggers]
+crons = ["* * * * *"]
+
+[vars]
+LOGIN_ROUTE = "instagram"

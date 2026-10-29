@@ -30,26 +30,26 @@ async function messagePass(acc) {
   const seen = data.poller.get();
   let newest = seen.lastSeen || 0;
   let handled = 0;
+  const seenIds = new Set(seen.handledMessages || []);
 
   const conversations = await meta.getConversations(acc.token);
   for (const conv of conversations) {
     const msgs = await meta.getConversationMessages(conv.id, acc.token);
     for (const m of msgs) {
       const ts = Date.parse(m.created_time || 0) || 0;
-      if (ts <= (seen.lastSeen || 0)) continue;
+      newest = Math.max(newest, ts);
+      if (seenIds.has(m.id)) continue;
+      seenIds.add(m.id);
       const full = await meta.getMessage(m.id, acc.token);
       const fromId = full.from && full.from.id;
-      if (fromId && acc.igId && String(fromId) === String(acc.igId)) {
-        newest = Math.max(newest, ts);
-        continue;
-      }
+      if (fromId && acc.igId && String(fromId) === String(acc.igId)) continue;
       await handleMessage({ type: 'message', senderId: fromId, text: full.message || '', mid: full.id, isEcho: false });
       handled++;
       newest = Math.max(newest, ts);
     }
   }
 
-  if (newest > (seen.lastSeen || 0)) data.poller.set({ lastSeen: newest });
+  data.poller.set({ lastSeen: newest, handledMessages: Array.from(seenIds).slice(-400) });
   return handled;
 }
 
