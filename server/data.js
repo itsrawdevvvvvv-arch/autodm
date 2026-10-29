@@ -19,12 +19,12 @@ function write(name, value) {
 
 const DEFAULTS = {
   rules: [
-    { id: 'r1', type: 'dm', name: 'Price enquiry', enabled: true, keywords: ['price', 'cost', 'how much'], match: 'contains', reply: 'Thanks for messaging! Our pricing starts at Rs.499/month — full details coming right up.' },
-    { id: 'r2', type: 'dm', name: 'Greeting', enabled: true, keywords: ['hi', 'hello', 'hey'], match: 'exact', reply: 'Hey! Thanks for reaching out — what can I help you with?' },
-    { id: 'r3', type: 'comment', name: 'Link request', enabled: true, keywords: ['link', 'send'], match: 'contains', publicReply: 'Sent to your DMs!', dmReply: 'Here is the link you asked for.' },
+    { id: 'r1', type: 'comment', name: 'Link request', enabled: true, keywords: ['link', 'send', 'send it'], match: 'contains', publicReply: 'Sent it to your DMs.', dmReply: 'Here is the link you asked for: https://example.com/link' },
+    { id: 'r2', type: 'comment', name: 'Price request', enabled: true, keywords: ['price', 'pricing', 'cost', 'how much'], match: 'contains', publicReply: '', dmReply: 'Here is the price list: https://example.com/pricing' },
+    { id: 'r3', type: 'dm', name: 'Greeting', enabled: true, keywords: ['hi', 'hello', 'hey'], match: 'exact', reply: 'Hey! Thanks for messaging — what can I help you with?' },
   ],
   activity: [],
-  settings: { maxSends: 200, windowHours: 24, disclose: true, sendsThisHour: 0, receiveMode: 'poll', pollSeconds: 30 },
+  settings: { maxSends: 200, windowHours: 24, disclose: true, sendsThisHour: 0, receiveMode: 'poll', pollSeconds: 30, autoReplyComments: true },
   account: { connected: false, token: '', igId: '', handle: '' },
 };
 

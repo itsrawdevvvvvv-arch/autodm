@@ -367,3 +367,14 @@ details .faq__a { padding: 0 1.1rem 1.1rem; font-size: .97rem; max-width: 68ch; 
   a { color: #000; text-decoration: underline; }
   .prose { max-width: none; }
 }
+
+/* ---------- code blocks ---------- */
+.prose pre {
+  background: var(--paper-2); border: var(--line) solid var(--ink);
+  border-radius: var(--radius); box-shadow: 4px 4px 0 var(--ink);
+  padding: .9rem 1rem; overflow-x: auto; margin-top: 1rem;
+}
+.prose pre code {
+  border: 0; background: none; padding: 0; font-size: .86rem;
+  line-height: 1.75; white-space: pre;
+}

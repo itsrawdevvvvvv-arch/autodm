@@ -1,10 +1,11 @@
 services:
   - type: web
-    name: autodm
+    name: viraloop
     runtime: node
     plan: free
     buildCommand: npm install
     startCommand: npm start
+    healthCheckPath: /health
     envVars:
       - key: PUBLIC_URL
         sync: false
@@ -15,4 +16,8 @@ services:
       - key: LOGIN_ROUTE
         value: instagram
       - key: WEBHOOK_VERIFY_TOKEN
+        generateValue: true
+      # Locks the dashboard so only you can edit automations.
+      # Copy the generated value into the dashboard's Settings panel.
+      - key: APP_KEY
         generateValue: true

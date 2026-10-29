@@ -81,8 +81,8 @@ ABOUT = f"""
   <div class="wrap grid grid-2" style="align-items:center;gap:clamp(1.5rem,4vw,3rem)">
     <div class="stack">
       <h2>Who's behind it</h2>
-      <p>Viraloop is built by a small product team based in India. We're in open beta, which means you'll be talking to the people who write the code rather than a support queue.</p>
-      <p class="muted">Company details: [Your Legal Entity], [Registered Address], [City, State, PIN], India. Add your CIN/GSTIN here before launch — Indian consumer-protection rules require seller identity on a commercial site.</p>
+      <p>Viraloop is built by a small product team based in India. It is free and self-hosted, which means you're talking to the people who write the code rather than a support queue.</p>
+      <p class="muted">Company details: [Your Legal Entity], [Registered Address], [City, State, PIN], India. Replace these before publishing — Indian consumer-protection rules expect a real operator identity on a commercial site.</p>
       <div class="btn-row"><a class="btn" href="contact.html">Say hello</a></div>
     </div>
     <div class="card card--tan">
@@ -92,7 +92,7 @@ ABOUT = f"""
   </div>
 </section>
 
-{cta_band(heading="Try it before you trust it.", sub="The beta is free and the setup is reversible — disconnect any time.")}
+{cta_band(heading="Try it before you trust it.", sub="Free, and the setup is reversible — disconnect any time.")}
 """
 
 # ---------------------------------------------------------------- CONTACT
@@ -121,7 +121,7 @@ CONTACT = f"""
         <div class="field">
           <label for="topic">What's it about?</label>
           <select id="topic" name="topic">
-            <option>Beta access</option>
+            <option>Getting started</option>
             <option>Product question</option>
             <option>Billing</option>
             <option>Something is broken</option>
@@ -282,8 +282,8 @@ def post_page(p):
       <div class="prose mt-l">
         <div class="card card--tan">
           <h3>Put it into practice</h3>
-          <p class="mt-m">Viraloop turns the playbook above into a ten-minute setup: pick a post, add keywords, write the DM. Free while we're in beta.</p>
-          <div class="btn-row mt-m"><a class="btn" href="../pricing.html#start">Join the beta</a><a class="btn btn--ghost" href="../help/index.html">Read the help centre</a></div>
+          <p class="mt-m">Viraloop turns the playbook above into a ten-minute setup: pick a post, add keywords, write the DM. It is free for one account.</p>
+          <div class="btn-row mt-m"><a class="btn" href="../pricing.html#start">Get it free</a><a class="btn btn--ghost" href="../help/index.html">Read the help centre</a></div>
         </div>
       </div>
     </div>
@@ -350,7 +350,7 @@ def build():
          "Viraloop is an independent product built to close the gap between an Instagram comment and a reply. Our principles, how we work, and what we will not build.",
          ABOUT, active="about", jsonld=[ORG_LD])
     page("contact.html",
-         "Contact Viraloop — support, beta access, partnerships",
+         "Contact Viraloop — support, setup questions, partnerships",
          "Email hello@viraloop.co or use the form. Beta support answers within one working day, Monday to Friday, IST.",
          CONTACT, active="contact")
     page("blog/index.html",

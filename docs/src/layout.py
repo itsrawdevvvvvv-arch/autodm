@@ -9,6 +9,13 @@ EMAIL = "hello@viraloop.co"
 INSTAGRAM = "https://instagram.com/viraloop"
 UPDATED = "29 October 2026"
 
+# Where the dashboard lives once deployed. Leave empty until you have a URL:
+# the site then shows the one-click deploy button instead of a dead link.
+APP_URL = ""
+REPO_URL = "https://github.com/itsrawdevvvvvv-arch/autodm"
+DEPLOY_URL = "https://render.com/deploy?repo=" + REPO_URL
+FREE_LINE = "Free forever, one account, no card"
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 NAV = [
@@ -123,7 +130,7 @@ def header(active, depth=0):
       {''.join(links)}
     </nav>
     <div class="header__cta">
-      <a class="btn btn--ghost btn--sm" href="{r('pricing.html')}#start">Join beta</a>
+      <a class="btn btn--ghost btn--sm" href="{r('pricing.html')}#start">Get it free</a>
     </div>
   </div>
 </header>"""
@@ -141,7 +148,7 @@ def footer(depth=0):
     <div class="footer__grid">
       <div class="footer__brand">
         <a class="brand" href="{r('index.html')}">{brand_mark()}<span>{BRAND}</span></a>
-        <p>Instagram DM automation for creators and small teams. Built on Meta's official API, policy-safe by design.</p>
+        <p>Free Instagram DM automation for one account. Built on Meta's official API, policy-safe by design.</p>
       </div>
       <div>
         <h4>Product</h4>
@@ -149,7 +156,7 @@ def footer(depth=0):
           <li><a href="{r('features.html')}">Features</a></li>
           <li><a href="{r('pricing.html')}">Pricing</a></li>
           <li><a href="{r('help/index.html')}">Help centre</a></li>
-          <li><a href="{r('pricing.html')}#start">Join the beta</a></li>
+          <li><a href="{r('pricing.html')}#start">Get it free</a></li>
         </ul>
       </div>
       <div>
@@ -198,8 +205,8 @@ def page(path, title, desc, body, active="", depth=0, jsonld=None, noindex=False
 # ---------- reusable blocks ----------
 
 def cta_band(depth=0, heading="Turn your comments into conversations.",
-             sub="Free while we're in beta. No card, no lock-in, no cold DMs.",
-             label="Join the beta", href="pricing.html#start"):
+             sub="Free forever, one account, no card. Deploy it once and it is yours.",
+             label="Get it free", href="pricing.html#start"):
     r = lambda p: rel(depth, p)
     return f"""<section class="section cta-band">
   <div class="wrap center stack">
@@ -273,5 +280,5 @@ APP_LD = {
     "description": "Instagram DM automation for creators: comment-to-DM triggers, story reply capture, timed follow-ups and link delivery.",
     "url": SITE + "/",
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "INR",
-               "description": "Free during public beta"},
+               "description": "Free. One account, self-hosted."},
 }

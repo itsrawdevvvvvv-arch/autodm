@@ -1,179 +1,302 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>AutoDM</title>
-<link rel="stylesheet" href="css/styles.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — Viraloop</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#f4ead9">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/space-grotesk-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
 
-<div class="app">
-
-  <!-- ===== Profile header ===== -->
-  <header class="hdr">
-    <div class="hdr-left">
-      <div class="avatar" id="avatar">?</div>
-      <div class="hdr-name">
-        <strong id="handleName">Not connected</strong>
-        <span id="tagline">Connect your account</span>
-      </div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M5 18c4 0 4-12 8-12 2.2 0 3 2 3 4"/><path d="M16 14c0 2-.8 4-3 4-4 0-4-12-8-12"/></svg>
+      </span>
+      Viraloop <span class="tag">dashboard</span>
+    </a>
+    <div class="top__right">
+      <span class="pill pill--off" id="status-pill"><span class="dot"></span><span id="status-text">Checking…</span></span>
+      <button class="btn btn--ghost btn--sm" id="scan-btn" type="button">Check now</button>
     </div>
-    <span class="badge" id="badge">
-      <svg viewBox="0 0 24 24" class="star-ico"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6L12 16.8 6.6 19.6l1.2-6L3.3 9.4l6.1-.8z"/></svg>
-      <em id="badgeText">Off</em>
-    </span>
-  </header>
-
-  <!-- ===== Scrollable content ===== -->
-  <main class="content" id="content">
-
-    <!-- ---------- DASHBOARD ---------- -->
-    <section class="view is-active" id="view-dashboard">
-
-      <!-- day / date strip -->
-      <div class="datestrip" id="dateStrip"></div>
-
-      <!-- main card -->
-      <div class="card">
-        <div class="card-title">
-          <strong>Automation status</strong>
-          <span class="stars" id="stars"></span>
-        </div>
-        <p class="card-desc" id="cardDesc">Connect your Instagram Professional account to start replying automatically.</p>
-
-        <div class="subcard">
-          <div class="avatar sm" id="subAvatar">?</div>
-          <div class="subcard-txt">
-            <strong id="subName">No account</strong>
-            <span id="subTag">Not connected</span>
-          </div>
-          <span class="badge sm" id="subBadge">—</span>
-        </div>
-
-        <div class="boxes" id="statBoxes"></div>
-
-        <button class="btn-primary" id="connectBtn">Connect Instagram</button>
-      </div>
-
-      <!-- guardrails -->
-      <div class="card">
-        <div class="card-title">
-          <strong>Guardrails</strong>
-          <span class="badge sm" id="guardTag">Active</span>
-        </div>
-        <ul class="ticks" id="guardList"></ul>
-      </div>
-    </section>
-
-    <!-- ---------- AUTO-REPLIES ---------- -->
-    <section class="view" id="view-replies">
-      <div class="card">
-        <div class="card-title"><strong>Auto-Replies</strong><span class="badge sm" id="ruleCount">0</span></div>
-        <p class="card-desc">When someone messages you, or comments a keyword, AutoDM sends the reply you set here.</p>
-      </div>
-      <div id="ruleList" class="stack"></div>
-    </section>
-
-    <!-- ---------- ACTIVITY ---------- -->
-    <section class="view" id="view-activity">
-      <div class="card">
-        <div class="card-title"><strong>Activity</strong><span class="badge sm" id="actCount">0</span></div>
-        <div class="feed" id="activityFeed"></div>
-      </div>
-    </section>
-
-    <!-- ---------- SETTINGS ---------- -->
-    <section class="view" id="view-settings">
-      <div class="card">
-        <div class="card-title"><strong>Account</strong><span class="badge sm" id="modeBadge">Polling</span></div>
-        <label class="field"><span>Access token <small>(paste your long-lived token — no login redirect needed)</small></span><input type="password" id="manualToken" placeholder="IGQVJ..." /></label>
-        <button class="btn-primary" id="saveConnection">Save token</button>
-        <button class="btn-outline" id="refreshToken">Refresh token</button>
-      </div>
-
-      <div class="card">
-        <div class="card-title"><strong>How messages arrive</strong></div>
-        <div class="seg" id="modeSeg">
-          <button type="button" class="seg-btn is-active" data-mode="poll">Polling</button>
-          <button type="button" class="seg-btn" data-mode="webhook">Webhook</button>
-        </div>
-        <p class="card-desc" id="modeDesc" style="margin-top:10px"></p>
-        <label class="field"><span>Check every (seconds)</span><input type="number" id="pollSeconds" min="10" max="600" /></label>
-        <label class="field"><span>Max sends per hour</span><input type="number" id="maxSends" min="1" max="1000" /></label>
-        <label class="field"><span>Reply window (hours)</span><input type="number" id="windowHours" min="1" max="24" /></label>
-        <label class="switch-row"><span>Tell people a bot is replying</span><input type="checkbox" id="disclose" /></label>
-        <button class="btn-primary" id="saveLimits">Save</button>
-      </div>
-
-      <div class="card">
-        <div class="card-title"><strong>Advanced</strong></div>
-        <label class="field"><span>Server address <small>(only if the app is hosted separately)</small></span><input type="text" id="apiBase" placeholder="http://localhost:3000" /></label>
-      </div>
-
-      <div class="card">
-        <div class="card-title"><strong>Rules data</strong></div>
-        <button class="btn-outline" id="exportRules">Export rules</button>
-        <label class="btn-outline" for="importRules">Import rules</label>
-        <input type="file" id="importRules" accept=".json" hidden />
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ===== Bottom navigation ===== -->
-  <nav class="nav" id="nav">
-    <button class="tab is-active" data-view="dashboard">
-      <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg><span>Dashboard</span>
-    </button>
-    <button class="tab" data-view="replies">
-      <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.5 7.2L4 21l1.8-5.5A8 8 0 1121 12z"/></svg><span>Replies</span>
-    </button>
-    <button class="tab" data-view="activity">
-      <svg viewBox="0 0 24 24"><path d="M4 19h16M7 19V9m5 10V5m5 14v-7"/></svg><span>Activity</span>
-    </button>
-    <button class="tab" data-view="settings">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M4.2 4.2l2.1 2.1m11.4 11.4l2.1 2.1M2 12h3m14 0h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>Settings</span>
-    </button>
-  </nav>
-
-  <!-- Floating add button -->
-  <button class="fab" id="fab" hidden>+</button>
-</div>
-
-<!-- ===== Rule editor sheet ===== -->
-<div class="sheet-backdrop" id="sheetBackdrop">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <h3 id="sheetTitle">New auto-reply</h3>
-      <button class="x" id="sheetClose">&times;</button>
-    </div>
-    <form id="ruleForm" class="sheet-body">
-      <input type="hidden" id="ruleId" />
-      <p class="eyebrow">What triggers it</p>
-      <div class="seg" id="triggerSeg">
-        <button type="button" class="seg-btn is-active" data-trigger="dm">Direct message</button>
-        <button type="button" class="seg-btn" data-trigger="comment">Comment</button>
-      </div>
-      <label class="field"><span>Name</span><input type="text" id="ruleName" placeholder="Price enquiry" required /></label>
-      <label class="field"><span>Keywords (comma separated)</span><input type="text" id="ruleKeywords" placeholder="price, cost, how much" required /></label>
-      <label class="field"><span>Match</span>
-        <select id="ruleMatch"><option value="contains">contains any keyword</option><option value="exact">matches exactly</option></select>
-      </label>
-      <label class="field" id="fldDm"><span>Reply message</span><textarea id="ruleReply" rows="3" placeholder="Sent back as a DM"></textarea></label>
-      <label class="field" id="fldPublic" hidden><span>Public comment reply (optional)</span><textarea id="rulePublic" rows="2" placeholder="Posted under the comment"></textarea></label>
-      <label class="field" id="fldDmComment" hidden><span>Private DM reply</span><textarea id="ruleDmReply" rows="3" placeholder="DM sent after the comment"></textarea></label>
-      <div class="sheet-actions">
-        <button type="button" class="btn-outline" id="sheetCancel">Cancel</button>
-        <button type="submit" class="btn-primary">Save</button>
-      </div>
-    </form>
   </div>
-</div>
+</header>
 
-<div class="toast" id="toast"></div>
+<nav class="tabs" aria-label="Sections">
+  <div class="wrap">
+    <a href="#account">Account</a>
+    <a href="#automations">Automations</a>
+    <a href="#tester">Test a reply</a>
+    <a href="#activity">Activity</a>
+    <a href="#settings">Settings</a>
+    <a href="#help">Help</a>
+  </div>
+</nav>
 
-<script src="js/app.js"></script>
+<main>
+
+  <!-- ---------------- ACCOUNT ---------------- -->
+  <section class="panel" id="account">
+    <div class="wrap">
+      <div class="panel__head">
+        <h2>Account</h2>
+        <p class="muted">Connect the Instagram account the automations should answer for.</p>
+      </div>
+
+      <div id="account-disconnected">
+        <div class="grid grid--2">
+          <div class="card">
+            <h3>Connect with an access token</h3>
+            <p class="small muted" style="margin:.4rem 0 .9rem">Fastest route. Works without a Meta app review, and the token can be revoked any time from Instagram settings.</p>
+            <form id="token-form">
+              <div class="field">
+                <label for="token">Long-lived Instagram access token</label>
+                <textarea id="token" name="token" rows="3" placeholder="IGAA..." required spellcheck="false"></textarea>
+                <span class="hint">From the Meta app dashboard → Instagram → API setup. Starts with <code>IGAA</code>.</span>
+              </div>
+              <button class="btn" type="submit">Connect account</button>
+            </form>
+            <p class="small muted" style="margin-top:.8rem" id="oauth-wrap" hidden>
+              Or <a href="/auth/instagram">sign in with Instagram</a> — available because a Meta app is configured on this server.
+            </p>
+          </div>
+
+          <div class="card card--tan">
+            <h3>What you need</h3>
+            <ol class="steps" style="margin-top:.7rem">
+              <li><span>An Instagram <strong>Creator</strong> or <strong>Business</strong> account.</span></li>
+              <li><span>Messaging permission on a Meta app — <code>instagram_business_manage_messages</code>.</span></li>
+              <li><span>A long-lived token pasted above. It lasts about 60 days; refresh it here any time.</span></li>
+            </ol>
+            <p class="small" style="margin-top:.9rem">Nothing is sent to anyone who hasn't messaged or commented on your account first.</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="account-connected" hidden>
+        <div class="grid grid--3">
+          <div class="card" style="grid-column: span 2">
+            <div class="row" style="justify-content:space-between">
+              <div>
+                <p class="small muted">Connected account</p>
+                <h3 id="acc-handle" style="font-size:1.5rem">@—</h3>
+                <p class="small muted" id="acc-meta"></p>
+              </div>
+              <div class="row">
+                <button class="btn btn--ghost btn--sm" id="refresh-btn" type="button">Refresh token</button>
+                <button class="btn btn--danger btn--sm" id="disconnect-btn" type="button">Disconnect</button>
+              </div>
+            </div>
+            <p class="small" id="acc-warning" hidden style="margin-top:.8rem;color:var(--clay);font-weight:700"></p>
+          </div>
+          <div class="card card--ink">
+            <p class="small" style="opacity:.75">Engine</p>
+            <h3 id="engine-state" style="margin-top:.3rem">—</h3>
+            <p class="small" id="engine-detail" style="opacity:.8;margin-top:.4rem"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- AUTOMATIONS ---------------- -->
+  <section class="panel" id="automations">
+    <div class="wrap">
+      <div class="panel__head">
+        <h2>Automations</h2>
+        <p class="muted">Each rule watches for keywords and sends one reply. Comment rules can also post a public reply.</p>
+      </div>
+
+      <div class="grid grid--2" style="align-items:start">
+        <div>
+          <h3 style="margin-bottom:.7rem">Live rules</h3>
+          <div id="rules-list"><div class="empty">Loading…</div></div>
+        </div>
+
+        <div class="card" id="rule-form-card">
+          <h3 id="rule-form-title">New automation</h3>
+          <form id="rule-form" style="margin-top:.8rem">
+            <input type="hidden" id="rule-id">
+            <div class="field">
+              <label for="rule-type">Trigger</label>
+              <select id="rule-type">
+                <option value="comment">Someone comments on a post or reel</option>
+                <option value="dm">Someone messages me</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="rule-name">Name</label>
+              <input id="rule-name" type="text" placeholder="Link request" required maxlength="60">
+            </div>
+            <div class="field">
+              <label for="rule-keywords">Keywords</label>
+              <input id="rule-keywords" type="text" placeholder="link, send it, send" required>
+              <span class="hint">Comma separated. Matching ignores case.</span>
+            </div>
+            <div class="field">
+              <label for="rule-match">Match</label>
+              <select id="rule-match">
+                <option value="contains">Contains the keyword</option>
+                <option value="exact">Exactly equals the keyword</option>
+              </select>
+            </div>
+
+            <div id="comment-fields">
+              <div class="field">
+                <label for="rule-dm">Direct message to send</label>
+                <textarea id="rule-dm" placeholder="Here is the link you asked for: …"></textarea>
+                <span class="hint">Sent as a private reply to the comment.</span>
+              </div>
+              <div class="field">
+                <label for="rule-public">Public reply (optional)</label>
+                <input id="rule-public" type="text" placeholder="Sent it to your DMs." maxlength="300">
+              </div>
+            </div>
+
+            <div id="dm-fields" hidden>
+              <div class="field">
+                <label for="rule-reply">Reply to send</label>
+                <textarea id="rule-reply" placeholder="Hey! Thanks for messaging — what can I help you with?"></textarea>
+              </div>
+            </div>
+
+            <div class="row">
+              <button class="btn" type="submit" id="rule-submit">Create automation</button>
+              <button class="btn btn--ghost" type="button" id="rule-cancel" hidden>Cancel</button>
+            </div>
+            <p class="small" id="rule-error" style="color:var(--clay);font-weight:700;margin-top:.6rem" hidden></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- TESTER ---------------- -->
+  <section class="panel" id="tester">
+    <div class="wrap">
+      <div class="panel__head">
+        <h2>Test a reply</h2>
+        <p class="muted">Checks which rule would fire. Nothing is sent.</p>
+      </div>
+      <div class="grid grid--2" style="align-items:start">
+        <div class="card">
+          <form id="test-form">
+            <div class="field">
+              <label for="test-type">If someone…</label>
+              <select id="test-type">
+                <option value="comment">comments this</option>
+                <option value="dm">messages this</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="test-text">Sample text</label>
+              <input id="test-text" type="text" placeholder="send me the link" required>
+            </div>
+            <button class="btn" type="submit">Run test</button>
+          </form>
+        </div>
+        <div id="test-result"><div class="empty">Run a test to see the matching rule and the exact reply.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- ACTIVITY ---------------- -->
+  <section class="panel" id="activity">
+    <div class="wrap">
+      <div class="panel__head">
+        <h2>Activity</h2>
+        <p class="muted">Every automated reply, newest first.</p>
+        <div style="margin-left:auto"><button class="btn btn--ghost btn--sm" id="clear-log" type="button">Clear log</button></div>
+      </div>
+      <div class="log" id="log"><div class="empty">Nothing yet.</div></div>
+    </div>
+  </section>
+
+  <!-- ---------------- SETTINGS ---------------- -->
+  <section class="panel" id="settings">
+    <div class="wrap">
+      <div class="panel__head">
+        <h2>Settings</h2>
+      </div>
+      <div class="grid grid--2" style="align-items:start">
+        <div class="card">
+          <form id="settings-form">
+            <div class="field">
+              <label for="pollSeconds">Check for new comments and messages every</label>
+              <select id="pollSeconds">
+                <option value="15">15 seconds</option>
+                <option value="30">30 seconds</option>
+                <option value="60">1 minute</option>
+                <option value="120">2 minutes</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="maxSends">Safety cap — replies per hour</label>
+              <input id="maxSends" type="number" min="1" max="2000" step="1">
+              <span class="hint">A guard against runaway loops, not a plan limit.</span>
+            </div>
+            <div class="field">
+              <label for="receiveMode">Receive mode</label>
+              <select id="receiveMode">
+                <option value="poll">Polling — no public URL needed (recommended)</option>
+                <option value="webhook">Webhook — needs a public HTTPS URL</option>
+              </select>
+            </div>
+            <div class="check" style="margin-bottom:.9rem">
+              <input id="autoReplyComments" type="checkbox">
+              <label for="autoReplyComments">Include comments in each polling pass</label>
+            </div>
+            <button class="btn" type="submit">Save settings</button>
+          </form>
+        </div>
+
+        <div class="card card--tan">
+          <h3>Access key</h3>
+          <p class="small" style="margin:.4rem 0 .8rem">If this dashboard is on a public URL, set <code>APP_KEY</code> in the server environment so only you can change automations. The key is stored in this browser only.</p>
+          <div class="field">
+            <label for="api-key">Key</label>
+            <input id="api-key" type="password" placeholder="Paste the key from your server environment" autocomplete="off">
+          </div>
+          <div class="row">
+            <button class="btn btn--sm" id="save-key" type="button">Save key</button>
+            <button class="btn btn--ghost btn--sm" id="clear-key" type="button">Forget key</button>
+          </div>
+          <p class="small" id="key-state" style="margin-top:.7rem"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- HELP ---------------- -->
+  <section class="panel" id="help" style="border-bottom:0">
+    <div class="wrap">
+      <div class="panel__head"><h2>How this works</h2></div>
+      <div class="grid grid--3">
+        <div class="card">
+          <h3>Polling, not webhooks</h3>
+          <p class="small" style="margin-top:.4rem">Every poll asks Instagram for new comments on your recent posts and for new messages in your conversations, then replies to anything it hasn't seen before. No public URL, no tunnel, no app review for webhooks.</p>
+        </div>
+        <div class="card">
+          <h3>Private replies</h3>
+          <p class="small" style="margin-top:.4rem">A comment is answered with one private reply, which is what opens the DM thread. That's the only mechanism Meta allows for comment-to-DM, and it's why this stays inside the rules.</p>
+        </div>
+        <div class="card">
+          <h3>What it will not do</h3>
+          <p class="small" style="margin-top:.4rem">No cold DMs, no follow-gating, no broadcasting. It only answers people who contacted you first — that's a hard limit in the code, not a setting.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
+<script src="/js/app.js"></script>
 </body>
 </html>

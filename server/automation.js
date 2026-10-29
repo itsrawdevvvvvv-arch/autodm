@@ -83,4 +83,19 @@ async function handleComment(ev) {
 
 const id = () => Math.random().toString(36).slice(2, 10);
 
-module.exports = { handleMessage, handleComment };
+/** Dry run: which rule would fire for this sample text, and what would it send? */
+function previewMatch(type, text) {
+  const rules = data.rules.all().filter(r => r.enabled && r.type === type);
+  const rule = rules.find(r => matches(text || '', r.keywords || [], r.match));
+  if (!rule) return { matched: false, checked: rules.length };
+  return {
+    matched: true,
+    checked: rules.length,
+    rule: { id: rule.id, name: rule.name, keywords: rule.keywords, match: rule.match },
+    outgoing: type === 'comment'
+      ? { publicReply: rule.publicReply || '', dm: rule.dmReply || '' }
+      : { dm: rule.reply || '' },
+  };
+}
+
+module.exports = { handleMessage, handleComment, previewMatch };

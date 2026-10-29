@@ -132,7 +132,7 @@ def make_sitemap():
     for base, dirs, files in os.walk(ROOT):
         dirs[:] = [x for x in dirs if x not in ("src", ".git", "assets", ".github")]
         for fn in sorted(files):
-            if not fn.endswith(".html") or fn == "404.html":
+            if not fn.endswith(".html") or fn in ("404.html", "autodm-setup-guide.html"):
                 continue
             rel = os.path.relpath(os.path.join(base, fn), ROOT).replace(os.sep, "/")
             pages.append(rel)
@@ -184,7 +184,7 @@ Live: {SITE}/
 ```
 index.html          Home
 features.html       Feature detail
-pricing.html        Plans + beta signup
+pricing.html        Pricing (free) + setup steps
 about.html          Company
 contact.html        Contact + form
 blog/               Blog index + 3 articles
@@ -228,8 +228,10 @@ overwrites it.
    `action` for a real endpoint (Formspree, Buttondown, your own API) and delete
    the `data-mailto` attribute when you have one.
 5. **Instagram handle.** `INSTAGRAM` in `src/layout.py`.
-6. **Pricing.** Free-in-beta, ₹499 Creator, ₹1,499 Agency — change in
-   `pages_a.py` (pricing block) if the numbers move.
+6. **App URL.** `APP_URL` in `src/layout.py` is empty until you deploy the
+   dashboard. Set it to your Render URL (e.g. `https://viraloop.onrender.com`)
+   and the site links straight into the app. `DEPLOY_URL` is the one-click
+   Render blueprint for the repo.
 
 ## Design system
 
@@ -274,7 +276,7 @@ def main():
     write("favicon.svg", FAVICON)
     write("robots.txt", ROBOTS)
     write(".nojekyll", "")
-    write("README.md", README)
+    write("site-readme.md", README)
     make_images()
     pages = make_sitemap()
     print(f"built {len(pages)} pages")

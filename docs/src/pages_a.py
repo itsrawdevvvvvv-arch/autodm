@@ -1,5 +1,6 @@
 """Pages: home, features, pricing."""
-from layout import (page, rel, icon, faq_block, cta_band, ORG_LD, APP_LD, SITE, EMAIL)
+from layout import (page, rel, icon, faq_block, cta_band, ORG_LD, APP_LD, SITE, EMAIL,
+                    DEPLOY_URL, REPO_URL, APP_URL)
 
 TICK = ["Policy-safe by design", "No follow-gating", "Official Meta API",
         "Replies in under two seconds", "Built for creators"]
@@ -42,12 +43,12 @@ HOME = f"""
       <h1>Turn every comment into a <span class="hl">conversation.</span></h1>
       <p class="lede">Viraloop answers comments and story replies with the right DM in seconds — so the people who were ready to buy hear from you while they still care.</p>
       <div class="btn-row">
-        <a class="btn" href="pricing.html#start">Join the free beta</a>
+        <a class="btn" href="pricing.html#start">Get it free</a>
         <a class="btn btn--ghost" href="#how">See how it works</a>
       </div>
       <p class="hero__note muted">
-        <span>{icon('check')} Free while in beta</span> &nbsp;·&nbsp;
-        <span>{icon('check')} No card required</span> &nbsp;·&nbsp;
+        <span>{icon('check')} Free forever</span> &nbsp;·&nbsp;
+        <span>{icon('check')} One account, no card</span> &nbsp;·&nbsp;
         <span>{icon('check')} Live in about 10 minutes</span>
       </p>
     </div>
@@ -158,51 +159,32 @@ HOME = f"""
   <div class="wrap">
     <div class="stack center" style="max-width:40rem;margin-inline:auto">
       <span class="eyebrow">Pricing</span>
-      <h2>Free while we're in beta.</h2>
-      <p class="lede" style="margin-inline:auto">Join now and your first six months after launch are free on the Creator plan. No card, no auto-charge.</p>
+      <h2>Free. One account. No card.</h2>
+      <p class="lede" style="margin-inline:auto">Viraloop runs on your own server for your own Instagram account. There is no plan to choose and no trial that expires.</p>
     </div>
-    <div class="plans mt-l">
-      <div class="card plan">
-        <span class="pill">Beta</span>
-        <h3>Free</h3>
-        <p class="plan__price">₹0 <small>/ month</small></p>
-        <p class="plan__meta">Everything, while we're in beta.</p>
-        <ul class="list-check">
-          <li>{icon('check')}<span>1 Instagram account</span></li>
-          <li>{icon('check')}<span>5 live automations</span></li>
-          <li>{icon('check')}<span>1,000 automated DMs / month</span></li>
-          <li>{icon('check')}<span>Email support</span></li>
+    <div class="grid grid-2 mt-l" style="align-items:start">
+      <div class="card">
+        <span class="pill">Everything included</span>
+        <h3 style="margin-top:.8rem">What you get</h3>
+        <ul class="list-check mt-m">
+          <li>{icon('check')}<span>Unlimited automations and unlimited automated DMs</span></li>
+          <li>{icon('check')}<span>Comment triggers, story replies and DM keywords</span></li>
+          <li>{icon('check')}<span>Public reply + private DM on the same comment</span></li>
+          <li>{icon('check')}<span>Dry-run tester, activity log, hourly safety cap</span></li>
+          <li>{icon('check')}<span>Runs on polling — no public URL or webhook needed</span></li>
+          <li>{icon('check')}<span>Your data in a JSON file you can read and delete</span></li>
         </ul>
-        <a class="btn btn--ghost" href="pricing.html#start">Join beta</a>
       </div>
-      <div class="card plan plan--featured">
-        <span class="pill">Most popular</span>
-        <h3>Creator</h3>
-        <p class="plan__price">₹499 <small>/ month after beta</small></p>
-        <p class="plan__meta">For creators running a real funnel.</p>
-        <ul class="list-check">
-          <li>{icon('check')}<span>1 Instagram account</span></li>
-          <li>{icon('check')}<span>25 live automations</span></li>
-          <li>{icon('check')}<span>10,000 automated DMs / month</span></li>
-          <li>{icon('check')}<span>Timed follow-ups + storefront</span></li>
-        </ul>
-        <a class="btn" href="pricing.html#start">Join beta — free</a>
-      </div>
-      <div class="card plan">
-        <span class="pill">Studio</span>
-        <h3>Agency</h3>
-        <p class="plan__price">₹1,499 <small>/ month after beta</small></p>
-        <p class="plan__meta">For teams and managers.</p>
-        <ul class="list-check">
-          <li>{icon('check')}<span>3 Instagram accounts</span></li>
-          <li>{icon('check')}<span>Unlimited automations</span></li>
-          <li>{icon('check')}<span>50,000 automated DMs / month</span></li>
-          <li>{icon('check')}<span>3 seats + onboarding call</span></li>
-        </ul>
-        <a class="btn btn--ghost" href="pricing.html#start">Talk to us</a>
+      <div class="card card--ink">
+        <p class="small" style="opacity:.75">Cost</p>
+        <p class="plan__price" style="color:var(--paper)">₹0 <small>/ forever</small></p>
+        <p style="margin-top:.8rem;opacity:.9">No subscription, no per-message charge, no upsell. The only thing you might pay for is hosting — and the free tier of Render is enough to run this.</p>
+        <div class="btn-row" style="margin-top:1.2rem">
+          <a class="btn" href="{DEPLOY_URL}" rel="noopener">Deploy it free</a>
+          <a class="btn btn--ghost" href="pricing.html">How it works</a>
+        </div>
       </div>
     </div>
-    <p class="center muted mt-m" style="font-size:.85rem">All plans include the official Meta API integration, full message logs and unlimited manual replies. <a href="pricing.html">Full comparison →</a></p>
   </div>
 </section>
 
@@ -215,8 +197,10 @@ HOME = f"""
    "Only the ones you ask it to. You choose the keywords per post, and anything that doesn't match stays in your normal inbox for you to answer yourself."),
   ("What happens to my data?",
    "We store your account details, automation settings and message logs so the product can work. We don't sell data, we don't run advertising pixels on this site, and you can delete everything by disconnecting the account or emailing us. The <a href=\"privacy.html\">privacy policy</a> lists exactly what's processed."),
-  ("Is it really free right now?",
-   "Yes. The product is in open beta and costs nothing. When paid plans start, beta users get six months of Creator free — we'll email you before anything changes, and nothing auto-charges."),
+  ("Is it really free?",
+   "Yes — no plan, no card, no trial. Viraloop is software you run yourself for a single Instagram account. The only optional cost is hosting, and the free tier of Render is enough."),
+  ("What's the catch?",
+   "There isn't one. It runs on your own server, so there is no bill to send you. If you later want it hosted for you with more accounts, that would be a separate conversation — nothing on this page changes."),
 ])}
 
 {cta_band()}
@@ -252,7 +236,7 @@ FEATURES = f"""
     <h1>Everything between a comment and a customer.</h1>
     <p class="lede" style="margin-inline:auto">Six features, one engine. Each one is built to do a specific job in the funnel — and to stay inside Instagram's rules while doing it.</p>
     <div class="btn-row" style="justify-content:center">
-      <a class="btn" href="pricing.html#start">Join the free beta</a>
+      <a class="btn" href="pricing.html#start">Get it free</a>
       <a class="btn btn--ghost" href="pricing.html">See pricing</a>
     </div>
   </div>
@@ -311,7 +295,7 @@ FEATURES = f"""
   </div>
 </section>
 
-{cta_band(heading="Pick a post. Add a keyword. Reply forever.", sub="The beta is free and takes about ten minutes to set up.")}
+{cta_band(heading="Pick a post. Add a keyword. Reply forever.", sub="Free forever, one account, about ten minutes to set up.")}
 """
 
 
@@ -321,152 +305,108 @@ PRICING = f"""
 <section class="hero">
   <div class="wrap stack center" style="max-width:44rem;margin-inline:auto">
     <span class="eyebrow">Pricing</span>
-    <h1>Free while we're in beta. Honest after.</h1>
-    <p class="lede" style="margin-inline:auto">No trials that quietly convert, no annual lock-in, no per-seat surprises. One price per account, cancel whenever.</p>
+    <h1>Free. One account. No card.</h1>
+    <p class="lede" style="margin-inline:auto">Viraloop is software you run for your own Instagram account. No plan, no trial, no invoice — the only optional cost is hosting.</p>
+    <div class="btn-row" style="justify-content:center">
+      <a class="btn" href="{DEPLOY_URL}" rel="noopener">Deploy it free</a>
+      <a class="btn btn--ghost" href="#start">Run it locally</a>
+    </div>
   </div>
 </section>
 
 <section class="section section--tight">
-  <div class="wrap">
-    <div class="plans">
-      <div class="card plan">
-        <span class="pill">Beta</span>
-        <h3>Free</h3>
-        <p class="plan__price">₹0 <small>/ month</small></p>
-        <p class="plan__meta">While we're in open beta. No card.</p>
-        <ul class="list-check">
-          <li>{icon('check')}<span>1 Instagram account</span></li>
-          <li>{icon('check')}<span>5 live automations</span></li>
-          <li>{icon('check')}<span>1,000 automated DMs / month</span></li>
-          <li>{icon('check')}<span>Comment + story triggers</span></li>
-          <li>{icon('check')}<span>Email support</span></li>
-        </ul>
-        <a class="btn btn--ghost" href="#start">Join beta</a>
-      </div>
-      <div class="card plan plan--featured">
-        <span class="pill">Most popular</span>
-        <h3>Creator</h3>
-        <p class="plan__price">₹499 <small>/ month, after beta</small></p>
-        <p class="plan__meta">Free for six months for beta users.</p>
-        <ul class="list-check">
-          <li>{icon('check')}<span>1 Instagram account</span></li>
-          <li>{icon('check')}<span>25 live automations</span></li>
-          <li>{icon('check')}<span>10,000 automated DMs / month</span></li>
-          <li>{icon('check')}<span>Timed follow-ups</span></li>
-          <li>{icon('check')}<span>Creator storefront + checkout</span></li>
-          <li>{icon('check')}<span>Priority email support</span></li>
-        </ul>
-        <a class="btn" href="#start">Join beta — free</a>
-      </div>
-      <div class="card plan">
-        <span class="pill">Studio</span>
-        <h3>Agency</h3>
-        <p class="plan__price">₹1,499 <small>/ month, after beta</small></p>
-        <p class="plan__meta">For managers running several accounts.</p>
-        <ul class="list-check">
-          <li>{icon('check')}<span>3 Instagram accounts</span></li>
-          <li>{icon('check')}<span>Unlimited automations</span></li>
-          <li>{icon('check')}<span>50,000 automated DMs / month</span></li>
-          <li>{icon('check')}<span>3 team seats</span></li>
-          <li>{icon('check')}<span>CSV export + onboarding call</span></li>
-        </ul>
-        <a class="btn btn--ghost" href="#start">Talk to us</a>
-      </div>
+  <div class="wrap grid grid-2" style="align-items:start">
+    <div class="card">
+      <span class="pill">Everything, always</span>
+      <h3 style="margin-top:.8rem">Included</h3>
+      <ul class="list-check mt-m">
+        <li>{icon('check')}<span>Unlimited automations, unlimited automated replies</span></li>
+        <li>{icon('check')}<span>Comment triggers with public reply + private DM</span></li>
+        <li>{icon('check')}<span>DM keyword rules and story reply handling</span></li>
+        <li>{icon('check')}<span>Dry-run tester — see the exact reply before it sends</span></li>
+        <li>{icon('check')}<span>Activity log of every automated message</span></li>
+        <li>{icon('check')}<span>Hourly safety cap so a loop can never run away</span></li>
+        <li>{icon('check')}<span>Optional access key to lock the dashboard</span></li>
+        <li>{icon('check')}<span>Full source, no telemetry, no third-party trackers</span></li>
+      </ul>
     </div>
-    <p class="center muted mt-m" style="font-size:.85rem">Prices in INR, exclusive of GST. International cards are charged in INR; your bank converts.</p>
-  </div>
-</section>
-
-<section class="section section--tan">
-  <div class="wrap">
-    <h2>What's in each plan</h2>
-    <div class="table-wrap mt-m">
-      <table>
-        <caption class="sr-only">Feature comparison across the Free, Creator and Agency plans</caption>
-        <thead><tr><th scope="col">Feature</th><th scope="col">Free</th><th scope="col">Creator</th><th scope="col">Agency</th></tr></thead>
-        <tbody>
-          <tr><td>Instagram accounts</td><td>1</td><td>1</td><td>3</td></tr>
-          <tr><td>Live automations</td><td>5</td><td>25</td><td>Unlimited</td></tr>
-          <tr><td>Automated DMs / month</td><td>1,000</td><td>10,000</td><td>50,000</td></tr>
-          <tr><td>Comment + story triggers</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><td>Timed follow-ups</td><td>—</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><td>Creator storefront</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-          <tr><td>Team seats</td><td>1</td><td>1</td><td>3</td></tr>
-          <tr><td>Message log retention</td><td>30 days</td><td>12 months</td><td>12 months</td></tr>
-          <tr><td>Support</td><td>Email</td><td>Priority email</td><td>Onboarding call</td></tr>
-        </tbody>
-      </table>
+    <div class="card card--tan">
+      <h3>What it actually costs</h3>
+      <div class="table-wrap" style="margin-top:.9rem;box-shadow:none">
+        <table style="min-width:0">
+          <tbody>
+            <tr><td>Viraloop</td><td class="yes">₹0</td></tr>
+            <tr><td>Meta Instagram API</td><td class="yes">₹0</td></tr>
+            <tr><td>Hosting (Render free tier)</td><td class="yes">₹0</td></tr>
+            <tr><td>Hosting (always-on instance)</td><td>~$7/month, optional</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small" style="margin-top:.9rem">Free hosting sleeps after inactivity, so replies can be delayed by a minute or two until the next request wakes it. A paid instance removes that. Either way, the software is free.</p>
     </div>
   </div>
 </section>
 
 <section class="section" id="start">
-  <div class="wrap grid grid-2" style="align-items:start;gap:clamp(1.5rem,4vw,3rem)">
-    <div class="stack">
-      <span class="eyebrow">Beta access</span>
-      <h2>Get in early.</h2>
-      <p>Tell us where to reach you and we'll send your workspace invite, usually within one working day. Beta accounts keep six months of Creator free when paid plans begin.</p>
-      <ul class="list-check">
-        <li>{icon('check')}<span>No card, nothing auto-charges</span></li>
-        <li>{icon('check')}<span>One email from us, then your invite</span></li>
-        <li>{icon('check')}<span>Leave any time by replying to that email</span></li>
-      </ul>
-      <div class="card card--tan">
-        <p style="font-size:.9rem"><strong>Prefer email?</strong> Write to <a href="mailto:{EMAIL}">{EMAIL}</a> with your Instagram handle and we'll set you up manually.</p>
+  <div class="wrap">
+    <div class="stack center" style="max-width:40rem;margin-inline:auto">
+      <span class="eyebrow">Getting it running</span>
+      <h2>Three steps and it's yours.</h2>
+    </div>
+    <div class="grid grid-3 mt-l">
+      <div class="step">
+        <div class="step__num">1</div>
+        <div>
+          <h3>Deploy</h3>
+          <p>One click on Render, or run <code>npm install &amp;&amp; npm start</code> on your own machine. Nothing else to configure to get the dashboard up.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step__num">2</div>
+        <div>
+          <h3>Connect your account</h3>
+          <p>Paste a long-lived Instagram access token in the dashboard. It's stored on your server only, and you can revoke it from Instagram settings any time.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step__num">3</div>
+        <div>
+          <h3>Write one automation</h3>
+          <p>Pick keywords, write the DM, test it against a sample comment, then leave it running. Polling starts automatically.</p>
+        </div>
       </div>
     </div>
-    <div class="card">
-      <form class="form" data-mailto action="mailto:{EMAIL}" method="post" enctype="text/plain">
-        <div class="field">
-          <label for="name">Your name</label>
-          <input id="name" name="name" type="text" autocomplete="name" required>
-        </div>
-        <div class="field">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
-        </div>
-        <div class="field">
-          <label for="handle">Instagram handle</label>
-          <input id="handle" name="handle" type="text" placeholder="@yourhandle" required>
-          <span class="hint">Must be a Creator or Business account.</span>
-        </div>
-        <div class="field">
-          <label for="plan">Plan you're interested in</label>
-          <select id="plan" name="plan">
-            <option>Free beta</option>
-            <option>Creator (₹499/mo after beta)</option>
-            <option>Agency (₹1,499/mo after beta)</option>
-            <option>Not sure yet</option>
-          </select>
-        </div>
-        <div class="field field--check">
-          <input id="consent" name="consent" type="checkbox" required>
-          <label for="consent" style="font-weight:400;font-size:.9rem">I agree to the <a href="terms.html">terms of service</a> and <a href="privacy.html">privacy policy</a>, and to being contacted about my beta invite.</label>
-        </div>
-        <button class="btn btn--block" type="submit">Request beta access</button>
-        <p class="form__status" role="status" aria-live="polite"></p>
-        <p class="hint muted">This form opens your email app — nothing is stored on this site.</p>
-      </form>
+    <div class="card mt-l" style="max-width:44rem;margin-inline:auto">
+      <h3>Run it locally instead</h3>
+      <p class="small muted" style="margin:.4rem 0 .7rem">Needs Node 18 or newer. No database, no build step.</p>
+      <div class="prose"><pre style="overflow-x:auto"><code>git clone https://github.com/itsrawdevvvvvv-arch/autodm.git
+cd autodm
+npm install
+cp .env.example .env
+npm start</code></pre></div>
+      <p class="small" style="margin-top:.7rem">Then open <code>http://localhost:3000</code> and paste your token. Keep the terminal open while you want automations to run.</p>
     </div>
   </div>
 </section>
 
 {faq_block([
-  ("What happens when the beta ends?",
-   "Paid plans start and every beta account gets six months of Creator free, from that date. We email you at least two weeks before anything changes, and nothing charges without you adding payment details."),
-  ("Do you charge per follower or per message?",
-   "Per automated DM, with a generous monthly cap. Manual replies you send yourself are always unlimited and never counted."),
-  ("Can I cancel?",
-   "Yes, in one click from billing settings. Your automations stop, your data stays available for 30 days in case you change your mind, then it's deleted."),
-  ("Do you offer refunds?",
-   "If a paid month goes wrong, email us within 14 days of the charge and we'll refund it. No forms, no arguing."),
-  ("Is GST included?",
-   "Prices are exclusive of GST. Indian customers see GST added at checkout with a valid GSTIN for input credit."),
+  ("Is it really free, or free for now?",
+   "Free, with nothing to upgrade to. Viraloop is a single-account tool that runs on your own server, so there is no subscription to bill. There is no paid tier on this site and no waitlist."),
+  ("What's the catch?",
+   "The honest trade-off: you host it yourself. That means a Render account (free tier is fine) or a machine that stays on, and a Meta app with messaging permission. In exchange you get no per-message pricing and no vendor holding your data."),
+  ("Do I need to apply for Meta app review?",
+   "Not to get started. A long-lived token from your own Meta app is enough for your own account, which is the intended use here. Public, multi-user distribution would need app review — that's out of scope."),
+  ("Can I use it for more than one Instagram account?",
+   "One account per deployment. That's deliberate: it keeps the token, the data and the blast radius small. A second account means a second deployment."),
+  ("What happens to my data?",
+   "It lives in a JSON file on your server — account details, automation rules and the activity log. Nobody else can read it, there is no telemetry, and deleting the file deletes the data. See the <a href=\"privacy.html\">privacy policy</a>."),
+  ("Will this get my account restricted?",
+   "It only replies to people who commented or messaged first, it caps replies per hour, and it never requires a follow to unlock anything. Those are the behaviours that get accounts restricted, and none of them exist in the code."),
 ])}
 
 {cta_band(heading="Ten minutes from here to your first automated reply.",
-         sub="Free in beta. Bring a Creator or Business account and one post you'd like to test.",
-         label="Request access", href="#start")}
+         sub="Free forever, one account, no card.",
+         label="Deploy it free", href="#start")}
 """
 
 
@@ -483,6 +423,6 @@ def build():
          "Every part of the Viraloop engine: keyword comment triggers, story reply capture, timed follow-ups, trackable link delivery, creator storefront and human handoff.",
          FEATURES, active="features")
     page("pricing.html",
-         "Pricing — free in beta, ₹499 after | Viraloop",
-         "Viraloop pricing: free during open beta, then ₹499/month for Creator and ₹1,499/month for Agency. No card required, cancel any time, GST extra.",
+         "Pricing — free, one account, no card | Viraloop",
+         "Viraloop is free: unlimited automations for one Instagram account, self-hosted. No subscription, no card, no paid tier — the only optional cost is hosting.",
          PRICING, active="pricing", jsonld=[APP_LD])

@@ -122,29 +122,34 @@ HELP = [
 <h2 id="limits">Rate limits</h2>
 <p>Instagram applies its own per-account rate limits on top of our quotas. If you post something that goes very wide, some replies may be queued rather than sent instantly. The log shows queue time for every message.</p>
 """),
-    dict(slug="billing", title="Billing and beta access",
-         h1="Billing, beta access and cancellation",
-         desc="What the beta includes, when paid plans start, how GST works and how to cancel or get a refund.",
+    dict(slug="billing", title="Access, cost and limits",
+         h1="Access, cost and limits",
+         desc="Viraloop is free and runs on your own server for one Instagram account. What that means for hosting, tokens, limits and getting your data out.",
          tag="Account", mins=3,
          body="""
-<h2 id="beta">During the beta</h2>
-<p>Everything is free, no card is required, and nothing auto-charges. When paid plans begin, beta accounts get six months of the Creator plan free from that date.</p>
+<h2 id="cost">What it costs</h2>
+<p>Nothing. There is no subscription, no per-message charge and no paid tier. Viraloop is a single-account tool you run yourself, so there is no bill for us to send you.</p>
+<p>The one optional cost is hosting. The free tier of Render runs it fine; a free instance sleeps when idle, so a reply can be delayed by a minute or two until it wakes. A paid always-on instance removes that delay, but the software is identical.</p>
 
-<h2 id="pricing">After the beta</h2>
+<h2 id="account">One account per deployment</h2>
+<p>Each deployment connects to one Instagram account. That keeps the token, the stored data and the blast radius small. A second account means a second deployment — which on a free host is a second free service.</p>
+
+<h2 id="token">The access token</h2>
 <ul>
-  <li><strong>Creator</strong> — ₹499/month, one Instagram account, 10,000 automated DMs.</li>
-  <li><strong>Agency</strong> — ₹1,499/month, three accounts, 50,000 automated DMs, three seats.</li>
+  <li>Long-lived Instagram tokens last about 60 days.</li>
+  <li>Refresh from the dashboard: <strong>Account → Refresh token</strong>.</li>
+  <li>Revoke any time from Instagram's <strong>Apps and websites</strong> settings.</li>
+  <li>The token is stored on your server only, in a file you control.</li>
 </ul>
-<p>Prices are in INR and exclusive of GST. Indian customers see GST added at checkout; enter a GSTIN for input credit. International cards are charged in INR and converted by your bank.</p>
 
-<h2 id="cancel">Cancelling</h2>
-<p>Billing settings → Cancel. Automations stop at the end of the paid period, your data stays available for 30 days, then it's deleted. No cancellation call, no retention offer.</p>
+<h2 id="limits">Limits</h2>
+<p>There is an hourly safety cap (default 200 replies) that exists to stop a runaway loop, not to meter you. Raise or lower it in Settings. Instagram applies its own per-account rate limits on top, which is why very high-volume posts can queue.</p>
 
-<h2 id="refunds">Refunds</h2>
-<p>Email <a href="mailto:hello@viraloop.co">hello@viraloop.co</a> within 14 days of a charge that went wrong and we'll refund it. Include your account email and the invoice number.</p>
+<h2 id="data">Getting your data out</h2>
+<p>Everything lives in JSON files under <code>data/</code> on your server: rules, settings, activity and the account. Copy them, edit them or delete them. Deleting the folder is a complete wipe.</p>
 
-<h2 id="invoices">Invoices</h2>
-<p>Every payment produces a GST invoice, downloadable from billing settings and emailed to the address on the account.</p>
+<h2 id="help">Something broken?</h2>
+<p>Email <a href="mailto:hello@viraloop.co">hello@viraloop.co</a>, or check <a href="troubleshooting.html">troubleshooting</a> first — it covers the five usual causes.</p>
 """),
     dict(slug="troubleshooting", title="Nothing is sending",
          h1="Nothing is sending — a checklist",
@@ -206,7 +211,7 @@ HELP_INDEX = f"""
       <ul class="list-check mt-m">
         <li>{icon('check')}<span><a href="troubleshooting.html">Nothing is sending</a> — the five-point checklist</span></li>
         <li>{icon('check')}<span><a href="connect-instagram.html">Connection errors</a> — the usual fixes</span></li>
-        <li>{icon('check')}<span><a href="billing.html">Billing</a> — beta terms, GST, refunds</span></li>
+        <li>{icon('check')}<span><a href="billing.html">Access and cost</a> — hosting, tokens, limits</span></li>
       </ul>
     </div>
   </div>
@@ -268,7 +273,7 @@ TERMS = f"""
 <section class="section section--tight">
   <div class="wrap">
     <div class="prose">
-      <div class="callout"><p><strong>In short:</strong> Viraloop helps you reply to people who contacted you first. Don't use it for spam, don't use it to gate rewards behind a follow, and don't expect it to work if Instagram changes its API. The beta is free; paid plans start later, and you can leave whenever you like.</p></div>
+      <div class="callout"><p><strong>In short:</strong> Viraloop helps you reply to people who contacted you first. Don't use it for spam, don't use it to gate rewards behind a follow, and don't expect it to work if Instagram changes its API. It is free and runs on your own server, so there is nothing to cancel.</p></div>
 
       <h2 id="who">1. Who we are</h2>
       <p>Viraloop (“we”, “us”) is operated by <strong>[Your Legal Entity]</strong>, registered at [Registered Address], [City, State, PIN], India. By creating an account or using the service you agree to these terms. If you're agreeing on behalf of a company, you confirm you're allowed to.</p>
@@ -299,14 +304,14 @@ TERMS = f"""
       <h2 id="your-content">5. Your content and data</h2>
       <p>You keep ownership of your messages, automations and audience data. You grant us the limited licence needed to store and process it so the service can run. We don't sell your data and we don't use your message content to train models. See the <a href="privacy.html">privacy policy</a> for the detail.</p>
 
-      <h2 id="billing">6. Plans and payment</h2>
-      <p>The service is currently free in open beta. When paid plans begin, prices are shown on the <a href="pricing.html">pricing page</a> in INR, exclusive of GST, charged monthly in advance. Beta accounts receive six months of the Creator plan free from the date paid plans start. We'll give at least two weeks' notice by email before any charge.</p>
+      <h2 id="billing">6. Cost</h2>
+      <p>The software is provided free of charge. There is no subscription, no per-message fee and no paid tier. You run it on infrastructure you control, and any hosting or platform charges are between you and that provider.</p>
 
-      <h2 id="refunds">7. Refunds</h2>
-      <p>If a paid month goes wrong, email us within 14 days of the charge and we'll refund it. Refunds are issued to the original payment method.</p>
+      <h2 id="refunds">7. No payment terms</h2>
+      <p>Because nothing is charged, there is no billing cycle, no refund process and no payment data held. If that ever changes, it will require a new agreement with you — this page would be updated first.</p>
 
       <h2 id="availability">8. Availability</h2>
-      <p>We aim for high availability but we don't offer a service-level guarantee during the beta. Planned maintenance is announced by email where practical.</p>
+      <p>The software is provided as-is with no service-level guarantee. You control the host, so uptime is between you and your hosting provider.</p>
 
       <h2 id="termination">9. Suspension and termination</h2>
       <p>You can close your account at any time from settings. We can suspend or terminate an account that breaches these terms, that creates legal risk, or that is used in a way that endangers other users or the platform. On termination, your right to use the service ends and your data is deleted within 30 days, except where we must retain records by law.</p>

@@ -1,169 +1,161 @@
-# AutoDM
+# Viraloop
 
-An Instagram DM auto-reply console — automatically reply to people who
-**message** you or **comment a keyword** on your posts, using Meta's **official
-Instagram Messaging API**.
+**Free Instagram DM automation for one account.** Comment triggers, DM keyword rules, story replies — running on your own server, on Meta's official Instagram API.
 
-- **Live UI preview:** https://itsrawdevvvvvv-arch.github.io/autodm/
-  *(static demo — the buttons work, but it needs the backend below to actually send DMs)*
-- **Source:** https://github.com/itsrawdevvvvvv-arch/autodm
+No subscription, no per-message pricing, no paid tier. You deploy it, you own it, the data stays on your machine.
 
 ---
 
-## No terminal needed
+## What's in this repo
 
-You don't have to install anything or run any commands. Deploy the engine to a
-free cloud host with one click, then connect Instagram:
+| Path | What it is |
+|---|---|
+| `server/` | The app: Express API, polling engine, reply engine, JSON store |
+| `public/` | The dashboard UI (neobrutalist, vanilla JS, no build step) |
+| `docs/` | The marketing site, published by GitHub Pages |
+| `docs/src/` | Python generator for the marketing site (`python3 build.py`) |
+| `render.yaml` | One-click Render blueprint |
+
+The marketing site is live at **https://itsrawdevvvvvv-arch.github.io/autodm/**.
+The dashboard runs wherever you deploy `server/`.
+
+---
+
+## Quick start (local)
+
+```bash
+git clone https://github.com/itsrawdevvvvvv-arch/autodm.git
+cd autodm
+npm install
+cp .env.example .env
+npm start
+```
+
+Open **http://localhost:3000** and paste an access token.
+
+Node 18+. No database, no build step, two dependencies (`express`, `dotenv`).
+
+## Deploy to Render (free)
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/itsrawdevvvvvv-arch/autodm)
 
-**Full click-by-click guide (no npm, no localhost): [SETUP.md](SETUP.md)**
+The blueprint creates the service and generates `APP_KEY` and
+`WEBHOOK_VERIFY_TOKEN`. After the first deploy:
+
+1. Open the service → **Environment** → copy the `APP_KEY` value.
+2. Open your app URL → **Settings → Access key** → paste it. The dashboard now
+   accepts requests from your browser only.
+3. Go to **Account** and paste an Instagram access token.
+
+Free instances sleep after inactivity, so a reply can be delayed by a minute or
+two until the next request wakes the service. Any always-on instance removes
+that delay; the software is the same.
 
 ---
 
-## Personal use (just you)
+## Connecting your Instagram account
 
-If this is only ever for **your own** account, it gets much simpler:
+You need an Instagram **Creator** or **Business** account (not personal).
 
-- **No App Review.** That's only required to serve Instagram accounts you
-  don't own. For your own account, Standard Access is enough.
-- **No OAuth redirect.** Generate a long-lived token in the Meta console and
-  paste it into **Settings → Account**. It refreshes itself (**Refresh token**) —
-  no app secret needed.
-- **No public URL or tunnel.** Set receive mode to **Polling** and AutoDM
-  checks for new messages on its own, locally. Switch to **Webhook** only if you
-  want real-time delivery and have a public HTTPS URL.
+**Fastest route — paste a token:**
 
-Quick path:
+1. Create an app at [developers.facebook.com](https://developers.facebook.com) →
+   add the **Instagram** product.
+2. Add your Instagram account as a tester and generate a token with
+   `instagram_business_basic` and `instagram_business_manage_messages`.
+3. Exchange it for a long-lived token (~60 days), paste it into the dashboard.
 
-1. `npm install && npm start` → open http://localhost:3000
-2. Settings → Account → paste your long-lived token → **Save token**
-3. Add your reply rules under **Replies**
-4. DM your account from another account and watch it reply
+**Or use the login button:** set `META_APP_ID`, `META_APP_SECRET` and
+`PUBLIC_URL` (your deployed URL) and use *Sign in with Instagram* on the
+Account panel.
 
-> Note: Meta documents that reading conversations with people who don't have a
-> role on your app may require Advanced Access. If polling returns a permission
-> error, switch receive mode to **Webhook**.
+Refresh or revoke any time: **Account → Refresh token**, or Instagram →
+*Apps and websites*.
 
 ---
 
-## Read this first — how connecting actually works
+## How it works
 
-To connect a **real** Instagram account and send messages, there are only two
-possibilities:
+Every poll (default 30s) does two passes:
 
-| Method | Password needed? | Redirect to Instagram? | Allowed by Meta? |
-|---|---|---|---|
-| **OAuth** (what AutoDM uses) | No | **Yes** — Instagram's consent screen | Yes |
-| Password / session login | Yes | No | No — gets accounts banned |
+1. **Messages** — recent conversations; replies to new inbound DMs.
+2. **Comments** — recent posts and reels; for each new comment, optionally posts
+   a public reply and always sends one **private reply**, which is the
+   Meta-sanctioned way to move a comment into DMs.
 
-**No password, but yes, a redirect.** The redirect *is* the safe connection —
-it's how Instagram lets you approve an app without handing over your password.
-There is no working method that avoids it.
+No webhook, no public URL, no tunnel. Webhook mode is still there if you want
+push events (`/webhook`, verify token in `.env`).
 
----
+**Hard limits, by design:** it only answers people who contacted you first. There
+is no broadcast, no cold outreach and no follow-gating anywhere in the code.
 
-## Architecture
-
-```
-Browser (the web app)  ⇄  Node server  ⇄  Meta Instagram Messaging API
-  manage rules,            holds your          receives webhooks,
-  watch activity           app secret          sends the DMs
-```
-
-The browser never holds your app secret. The Node server does the privileged work.
+**Safety cap:** replies per hour (default 200) so a loop can never run away.
 
 ---
 
-## Run it locally
+## Configuration
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `PORT` | `3000` | HTTP port |
+| `PUBLIC_URL` | `http://localhost:3000` | Public URL for OAuth redirect |
+| `APP_KEY` | *(empty)* | Locks `/api/*`; empty = open (local use) |
+| `META_APP_ID` / `META_APP_SECRET` | *(empty)* | Only needed for the login button |
+| `LOGIN_ROUTE` | `instagram` | `instagram` or `facebook` (needs a linked Page) |
+| `WEBHOOK_VERIFY_TOKEN` | — | Only for webhook mode |
+| `MAX_SENDS_PER_HOUR` | `200` | Default cap, editable in the UI |
+
+## API
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/api/status` | Connection + engine state |
+| GET | `/api/account` | Connected account, live profile |
+| POST | `/api/token` | Connect with an access token |
+| POST | `/api/disconnect` | Forget the token |
+| POST | `/api/refresh-token` | Extend the long-lived token |
+| GET/POST | `/api/rules` | List / create automations |
+| PUT/DELETE | `/api/rules/:id` | Update / delete |
+| POST | `/api/rules/test` | Dry run — which rule matches, what it sends |
+| GET | `/api/activity` | Reply log |
+| GET/POST | `/api/settings` | Poll interval, cap, receive mode |
+| POST | `/api/scan` | Run one polling pass now |
+
+Send `X-Api-Key: <APP_KEY>` on every `/api` call when `APP_KEY` is set.
+
+## Where data lives
+
+`data/*.json` on the server: `account`, `rules`, `settings`, `activity`,
+`poller`. Git-ignored. Delete the folder to wipe everything.
+
+---
+
+## The marketing site
+
+Generated, so nav, head tags and structured data stay consistent:
 
 ```bash
-npm install
-cp .env.example .env      # fill in META_APP_ID / META_APP_SECRET
-npm start                 # → http://localhost:3000
+cd docs/src
+python3 build.py     # writes every page into docs/
+python3 qa.py        # link graph, schema, metadata, WCAG contrast
 ```
+
+Edit content in `pages_a.py` (home, features, pricing), `pages_b.py` (about,
+contact, blog), `pages_c.py` (help, legal, 404).
+
+**Before pointing a domain at it:** replace `[Your Legal Entity]` and the
+address in the footer/About/Terms/Privacy, set `APP_URL` in `docs/src/layout.py`
+to your deployed dashboard URL, and change `EMAIL` if you use a different
+mailbox. Details in `docs/site-readme.md`.
 
 ---
 
-## Deploy it (get a real URL)
+## Legacy
 
-The web app is static, but the messaging engine is a Node server — so it needs a
-Node host (not GitHub Pages alone). Free options:
+The earlier AutoDM console docs are preserved at
+`docs/autodm-setup-guide.html`. The old vanilla console UI has been replaced by
+the Viraloop dashboard in `public/`.
 
-**Render (easiest — `render.yaml` is included)**
-1. Push this repo to GitHub.
-2. On [render.com](https://render.com) → New → Blueprint → pick this repo.
-3. Render reads `render.yaml`, creates the service, and asks for the env vars
-   (`META_APP_ID`, `META_APP_SECRET`, `PUBLIC_URL`).
-4. Set `PUBLIC_URL` to the Render URL it gives you, then add that same URL +
-   `/auth/callback` as the redirect URI in your Meta app.
+## Licence
 
-**Docker (any host — Railway, Fly.io, a VPS)**
-```bash
-docker build -t autodm .
-docker run -p 3000:3000 --env-file .env autodm
-```
-
-**Heroku-style (a `Procfile` is included)**
-```
-web: node server/server.js
-```
-
-Once deployed, open the app URL, click **Connect Instagram**, and approve.
-
----
-
-## Full Meta setup
-
-1. **Instagram Professional account** — convert to Business/Creator.
-2. **Meta developer app** — developers.facebook.com → Create App → Business type.
-   Note the **App ID** and **App Secret** (Settings → Basic).
-3. **Add the Instagram product** → *API setup with Instagram login*.
-4. **Redirect URI** — add `https://YOUR-URL/auth/callback` under Business login.
-5. **Fill `.env`** with `PUBLIC_URL`, `META_APP_ID`, `META_APP_SECRET`,
-   `WEBHOOK_VERIFY_TOKEN`.
-6. **Connect** — open the app → Connect Instagram → approve.
-7. **Webhook** — in the App Dashboard, set callback `https://YOUR-URL/webhook`,
-   the same verify token, and subscribe to **`messages`** and **`comments`**.
-8. **Test** — from a second account, DM your account `price` (or comment `link`)
-   and watch the auto-reply land.
-
----
-
-## Safety — how the account stays safe
-
-- **OAuth only** — never a password.
-- **Replies only to inbound engagement** — there is no cold/bulk DM feature.
-- **24-hour window** enforced.
-- **Send-rate cap** (default 200/hour).
-- **Webhook signature verification** and event de-duplication.
-- Keep replies **varied and useful** — identical copy-paste messages get reported
-  as spam, which reduces delivery even on the official API.
-
-Test on a **throwaway Professional account** until the flow works.
-
----
-
-## Going live for other people's accounts
-
-Running it for **your own** account needs no review. The moment it serves
-Instagram accounts you don't own, you must pass **App Review** for Advanced
-Access on `instagram_business_manage_messages` (and
-`instagram_business_manage_comments` if comment triggers are used).
-
----
-
-## Files
-
-```
-public/            the web app (index.html, css, js)
-docs/              the GitHub Pages static build of the web app
-server/
-  server.js        routes: API, OAuth, webhook, static
-  meta.js          OAuth + Send API client
-  automation.js    reply engine (rule matching + guardrails)
-  webhook.js       signature verification + event parsing
-  data.js          JSON-file storage
-Dockerfile / render.yaml / Procfile   deployment configs
-.env.example       config template
-```
+MIT for the code in this repository.

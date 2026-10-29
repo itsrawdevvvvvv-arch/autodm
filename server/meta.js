@@ -137,5 +137,36 @@ async function refreshToken(token) {
   return j; // { access_token, token_type, expires_in }
 }
 
-module.exports = { configured, authorizeUrl, exchangeCode, getAccount, sendDM, sendPrivateReply, replyToComment,
+
+/* ---------- Media + comments (comment polling — no webhook needed) ---------- */
+async function getRecentMedia(token, limit = 10) {
+  const igId = igIdFor(token);
+  const fields = 'id,caption,permalink,timestamp,media_type,comments.limit(50){id,text,timestamp,from,username}';
+  const url = `${hostBase()}/${igId}/media?fields=${encodeURIComponent(fields)}&limit=${limit}&access_token=${encodeURIComponent(token)}`;
+  const res = await fetch(url);
+  const j = await res.json();
+  if (!res.ok) throw new Error('Media API: ' + JSON.stringify(j));
+  return j.data || [];
+}
+
+/** Full comment list for one media object (paged, most recent first). */
+async function getMediaComments(mediaId, token) {
+  const url = `${hostBase()}/${mediaId}/comments?fields=id,text,timestamp,from,username&limit=50&access_token=${encodeURIComponent(token)}`;
+  const res = await fetch(url);
+  const j = await res.json();
+  if (!res.ok) throw new Error('Comments API: ' + JSON.stringify(j));
+  return j.data || [];
+}
+
+/** Who am I — used by the dashboard to show the connected account. */
+async function getProfile(token) {
+  const igId = igIdFor(token);
+  const url = `${hostBase()}/${igId}?fields=id,user_id,username,name,profile_picture_url,followers_count,media_count&access_token=${encodeURIComponent(token)}`;
+  const res = await fetch(url);
+  const j = await res.json();
+  if (!res.ok) throw new Error('Profile API: ' + JSON.stringify(j));
+  return j;
+}
+
+module.exports = { configured, getRecentMedia, getMediaComments, getProfile, authorizeUrl, exchangeCode, getAccount, sendDM, sendPrivateReply, replyToComment,
   getConversations, getConversationMessages, getMessage, refreshToken, ROUTE, PUBLIC_URL };

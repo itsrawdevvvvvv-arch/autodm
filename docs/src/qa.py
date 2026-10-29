@@ -6,8 +6,9 @@ import sys
 from html.parser import HTMLParser
 from urllib.parse import urlparse
 
-ROOT = "/scratch/work/viraloop"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SKIP = {"src", ".git", "assets", ".github"}
+IGNORE = {"404.html", "autodm-setup-guide.html"}
 
 errors, warns = [], []
 
@@ -67,6 +68,8 @@ class P(HTMLParser):
 titles, descs = {}, {}
 total_bytes = 0
 for rel in pages():
+    if rel in IGNORE:
+        continue
     path = os.path.join(ROOT, rel)
     raw = open(path, encoding="utf-8").read()
     total_bytes += len(raw.encode())
@@ -156,7 +159,7 @@ for d, files in descs.items():
 # --- sitemap coverage
 sm = open(os.path.join(ROOT, "sitemap.xml"), encoding="utf-8").read()
 locs = re.findall(r"<loc>([^<]+)</loc>", sm)
-html_pages = [p for p in pages() if p != "404.html"]
+html_pages = [p for p in pages() if p not in IGNORE]
 if len(locs) != len(html_pages):
     errors.append(f"sitemap has {len(locs)} urls, site has {len(html_pages)} pages")
 for p in html_pages:
@@ -197,7 +200,7 @@ pairs = [("#1d120c", "#f4ead9", "ink on paper"),
          ("#1d120c", "#e3cba6", "ink on tan section"),
          ("#a84e2a", "#f4ead9", "clay text on paper")]
 
-print(f"pages: {len(pages())}  ·  html bytes: {total_bytes/1024:.1f} KB")
+print(f"pages: {len([p for p in pages() if p not in IGNORE])}  ·  html bytes: {total_bytes/1024:.1f} KB")
 print("\ncontrast:")
 for fg, bg, label in pairs:
     r = ratio(fg, bg)
